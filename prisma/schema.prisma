@@ -1,0 +1,343 @@
+// ============================================
+// POWER EXHAUST - Schéma Prisma
+// Rachat de lignes d'échappement moto
+// Base de données : SQLite (dev) → PostgreSQL (prod)
+// ============================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = []
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+// ─── Utilisateurs ────────────────────────────
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  role          Role      @default(CLIENT)
+  phone         String?
+  address       String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  rachats       Rachat[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─── Catalogue Échappements ─────────────────
+model ExhaustBrand {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  slug      String         @unique
+  logoEmoji String?
+  origine   String?        // pays d'origine (ex: "Slovénie", "Japon")
+  isActive  Boolean        @default(true)
+  models    ExhaustModel[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@map("exhaust_brands")
+}
+
+model ExhaustModel {
+  id          String         @id @default(cuid())
+  brandId     String
+  brand       ExhaustBrand   @relation(fields: [brandId], references: [id])
+  name        String
+  slug        String
+  type        String         // "slip-on", "full-system", "collecteur", "ligne-complete"
+  description String?
+  anneeDebut  Int?           // ex: 2015
+  anneeFin    Int?           // ex: 2023  (null = actuel)
+  isActive    Boolean        @default(true)
+  prices      ExhaustPrice[]
+  rachats     Rachat[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([brandId, slug])
+  @@map("exhaust_models")
+}
+
+model ExhaustPrice {
+  id        String          @id @default(cuid())
+  modelId   String
+  model     ExhaustModel    @relation(fields: [modelId], references: [id])
+  etat      EtatEchappement
+  prix      Float
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@unique([modelId, etat])
+  @@map("exhaust_prices")
+}
+
+// ─── Véhicule & Rachat ───────────────────────
+model Rachat {
+  id              String        @id @default(cuid())
+  reference       String        @unique @default(cuid())
+  statut          StatutRachat  @default(EN_ATTENTE)
+
+  // Vendeur (peut être null pour les demandes publiques)
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id])
+
+  // Ligne d'échappement du catalogue
+  exhaustModelId  String?
+  exhaustModel    ExhaustModel? @relation(fields: [exhaustModelId], references: [id])
+  prixOfficiel    Float?        // prix issu du catalogue au moment de la demande
+
+  // Informations du véhicule (moto)
+  marque          String        // marque de la moto
+  modele          String        // modèle de la moto
+  annee           Int?
+  immatriculation String?
+  kilometrage     Int?
+  typeEchappement String?
+  etatEchappement EtatEchappement
+  description     String?
+  photos          String?
+
+  // Offre de rachat
+  prixPropose     Float?
+  prixAccepte     Float?
+  noteAdmin       String?
+
+  // Informations du vendeur
+  nomVendeur        String
+  prenomVendeur     String
+  emailVendeur      String
+  telVendeur        String
+  adresseVendeur    String
+  villeVendeur      String
+  codePostalVendeur String
+
+  // Signature du vendeur (collectée lors de la soumission du formulaire)
+  signatureVendeur    String?
+  signatureVendeurAt  DateTime?  // horodatage de la signature
+  signatureVendeurIp  String?    // adresse IP du signataire
+  signatureVendeurUa  String?    // User-Agent du navigateur
+
+  // Token sécurisé pour validation/refus par l'admin via email
+  adminToken        String?
+
+  // Token sécurisé pour upload pièce d'identité (R321-3 CSI)
+  identiteToken     String?
+
+  // Pièce d'identité
+  identite          IdentiteDocument?
+
+  // RIB (coordonnées bancaires chiffrées)
+  rib               RibDocument?
+
+  // Expédition SendCloud
+  poidsKg           Float?
+  longueurCm        Int?
+  largeurCm         Int?
+  hauteurCm         Int?
+  boxtralOrderRef   String?
+
+  // Attestation
+  attestation       Attestation?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("rachats")
+}
+
+// ─── Attestation de Vente ────────────────────
+model Attestation {
+  id              String    @id @default(cuid())
+  rachatId        String    @unique
+  rachat          Rachat    @relation(fields: [rachatId], references: [id])
+
+  numero          String    @unique
+  dateVente       DateTime  @default(now())
+  prixFinal       Float
+
+  // Signatures (Base64)
+  signatureVendeur    String?
+  signatureAcheteur   String?
+  signatureVendeurAt  DateTime?
+  signatureAcheteurAt DateTime?
+
+  // PDF généré
+  pdfUrl          String?
+  estComplete     Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("attestations")
+}
+
+// ─── Enums ───────────────────────────────────
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+enum StatutRachat {
+  EN_ATTENTE
+  VALIDE
+  EN_COURS
+  OFFRE_ENVOYEE
+  ACCEPTE
+  EN_EXPEDITION
+  RECU
+  PAYE
+  NON_PAYE
+  LITIGE
+  REFUSE
+  COMPLETE
+}
+
+enum EtatEchappement {
+  EXCELLENT
+  BON
+  MOYEN
+  MAUVAIS
+}
+
+// ─── Pièce d'Identité (R321-3 CSI + RGPD) ───
+model IdentiteDocument {
+  id       String @id @default(cuid())
+  rachatId String @unique
+  rachat   Rachat @relation(fields: [rachatId], references: [id], onDelete: Cascade)
+
+  // Données légales obligatoires (Art. R321-3 CSI)
+  nom            String
+  prenom         String
+  dateNaissance  String  // format ISO date string
+  adresse        String
+  typePiece      String  // CARTE_IDENTITE | PASSEPORT | TITRE_SEJOUR | PERMIS_CONDUIRE
+  numeroPiece    String
+  dateDelivrance String  // format ISO date string
+  lieuDelivrance String
+
+  // Fichiers chiffrés AES-256-GCM (UUID, stockés hors dossier public)
+  fichierRectoUuid String?
+  fichierVersoUuid String?
+  fichierRectoMime String?
+  fichierVersoMime String?
+  fichierRectoIv   String? // IV AES-GCM (hex)
+  fichierRectoTag  String? // Auth tag AES-GCM (hex)
+  fichierVersoIv   String? // IV AES-GCM (hex)
+  fichierVersoTag  String? // Auth tag AES-GCM (hex)
+
+  // Consentement RGPD
+  consentementTraitement Boolean  @default(false)
+  consentementConservation Boolean @default(false)
+  consentementAt         DateTime?
+
+  // Purge automatique (30 jours après upload — fichiers uniquement)
+  purgeAt    DateTime
+  purgee     Boolean   @default(false)
+  purgeeAt   DateTime?
+
+  // Traçabilité
+  uploadIp String?
+  uploadUa String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("identite_documents")
+}
+
+// ─── Chat ────────────────────────────────────
+model ChatConversation {
+  id        String        @id @default(cuid())
+  nom       String
+  prenom    String
+  email     String
+  statut    String        @default("EN_ATTENTE") // EN_ATTENTE | REPONDU | FERME
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("chat_conversations")
+}
+
+model ChatMessage {
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  auteur         String           // CLIENT | ADMIN
+  contenu        String
+  createdAt      DateTime         @default(now())
+
+  @@map("chat_messages")
+}
+model RibDocument {
+  id       String @id @default(cuid())
+  rachatId String @unique
+  rachat   Rachat @relation(fields: [rachatId], references: [id], onDelete: Cascade)
+
+  // Fichier chiffré AES-256-GCM
+  fichierUuid String
+  fichierMime String  // image/jpeg | image/png | image/webp | application/pdf
+  fichierIv   String  // IV AES-GCM (hex)
+  fichierTag  String  // Auth tag AES-GCM (hex)
+
+  // Traçabilité
+  uploadIp String?
+  uploadUa String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rib_documents")
+}

@@ -1,0 +1,336 @@
+@import "tailwindcss";
+
+/* ============================================
+   POWER EXHAUST — Design System
+   Noir #0A0A0A + Rouge #E30613 + Blanc #FFFFFF
+   ============================================ */
+
+:root {
+  --background: #F4F4F4;
+  --foreground: #0A0A0A;
+
+  /* Power Exhaust Colors */
+  --exhaust-orange: #E30613;
+  --exhaust-orange-dark: #B8000F;
+  --exhaust-orange-light: #FECDD3;
+  --exhaust-dark: #0A0A0A;
+  --exhaust-gray: #141414;
+  --exhaust-mid: #2A2A2A;
+  --exhaust-light: #F4F4F4;
+  --exhaust-card: #FFFFFF;
+  --exhaust-border: #E5E5E5;
+
+  /* Shadows */
+  --shadow-orange: 0 4px 18px rgba(227, 6, 19, 0.40);
+  --shadow-orange-lg: 0 8px 30px rgba(227, 6, 19, 0.45);
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.10);
+  --shadow-card-hover: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Couleurs Power Exhaust */
+  --color-exhaust-orange: var(--exhaust-orange);
+  --color-exhaust-orange-dark: var(--exhaust-orange-dark);
+  --color-exhaust-orange-light: var(--exhaust-orange-light);
+  --color-exhaust-dark: var(--exhaust-dark);
+  --color-exhaust-gray: var(--exhaust-gray);
+  --color-exhaust-mid: var(--exhaust-mid);
+  --color-exhaust-light: var(--exhaust-light);
+  --color-exhaust-card: var(--exhaust-card);
+  --color-exhaust-border: var(--exhaust-border);
+
+  /* Legacy BMW (mappé vers la palette Power Exhaust) */
+  --color-bmw-blue: var(--exhaust-orange);
+  --color-bmw-blue-dark: var(--exhaust-orange-dark);
+  --color-bmw-light: #f87171;
+  --color-bmw-pale: #450a0a;
+  --color-bmw-dark: var(--exhaust-dark);
+
+  /* Ombres */
+  --shadow-orange: var(--shadow-orange);
+  --shadow-orange-lg: var(--shadow-orange-lg);
+  --shadow-card: var(--shadow-card);
+  --shadow-bmw: 0 4px 14px rgba(28, 105, 212, 0.35);
+}
+
+/* ── Reset & Base ── */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: var(--exhaust-orange); border-radius: 3px; }
+
+/* ── Utilitaires Power Exhaust ── */
+.exhaust-gradient {
+  background: linear-gradient(135deg, #0A0A0A 0%, #141414 60%, #1A0305 100%);
+}
+
+.exhaust-gradient-orange {
+  background: linear-gradient(135deg, #E30613 0%, #B8000F 100%);
+}
+
+.hero-moto-pattern {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(227,6,19,0.10) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(227,6,19,0.06) 0%, transparent 40%);
+}
+
+/* ── Animations ── */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(227,6,19,0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(227,6,19,0); }
+}
+@keyframes flame-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.05); }
+}
+
+.animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
+.animate-pulse-glow { animation: pulse-glow 2s infinite; }
+.animate-flame { animation: flame-pulse 2s ease-in-out infinite; }
+
+/* ── Step Wizard ── */
+.step-card-active {
+  border: 2px solid var(--exhaust-orange);
+  background: linear-gradient(135deg, #FFF0F0, #FFFFFF);
+}
+.step-card-completed {
+  border: 2px solid #22C55E;
+  background: #F0FDF4;
+}
+
+/* ── Price Display ── */
+.price-badge {
+  background: linear-gradient(135deg, #E30613, #B8000F);
+  color: white;
+  font-weight: 800;
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+/* ── Glass Card ── */
+.glass-dark {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--exhaust-orange);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--exhaust-orange-dark);
+}
+
+/* ── Sélection ── */
+::selection {
+  background: rgba(227, 6, 19, 0.35);
+  color: #ffffff;
+}
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out both;
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.35s ease-out both;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+
+/* ── Classes utilitaires BMW ── */
+.bg-bmw-gradient {
+  background: linear-gradient(135deg, var(--bmw-dark) 0%, var(--bmw-blue) 60%, var(--bmw-blue-dark) 100%);
+}
+
+.text-bmw-blue {
+  color: var(--bmw-blue);
+}
+
+.bg-bmw-blue {
+  background-color: var(--bmw-blue);
+}
+
+.bg-bmw-dark {
+  background-color: var(--bmw-dark);
+}
+
+.hover\:bg-bmw-blue-dark:hover {
+  background-color: var(--bmw-blue-dark);
+}
+
+.border-bmw-blue {
+  border-color: var(--bmw-blue);
+}
+
+.shadow-bmw {
+  box-shadow: var(--shadow-bmw);
+}
+
+.shadow-bmw-lg {
+  box-shadow: var(--shadow-bmw-lg);
+}
+
+.ring-bmw-blue {
+  --tw-ring-color: var(--bmw-blue);
+}
+
+/* ── Glass morphism ── */
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ── Hero pattern ── */
+.hero-pattern {
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(28, 105, 212, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(28, 105, 212, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(159, 201, 239, 0.05) 0%, transparent 70%);
+}
+
+/* ── Scroll smooth ── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Reveal on scroll (fade + montée) ── */
+.reveal-section {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-section.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Back-office dark overrides ── */
+.backoffice-theme {
+  background: var(--exhaust-dark);
+  color: #f3f4f6;
+}
+
+/* ─ Texte principal → blanc */
+.backoffice-theme .text-gray-900,
+.backoffice-theme .text-gray-800,
+.backoffice-theme .text-gray-700,
+.backoffice-theme .text-exhaust-dark,
+.backoffice-theme .text-bmw-dark,
+.backoffice-theme .text-white { color: #f3f4f6 !important; }
+
+/* ─ Texte secondaire → gris clair */
+.backoffice-theme .text-gray-600,
+.backoffice-theme .text-gray-500,
+.backoffice-theme .text-gray-400 { color: #9ca3af !important; }
+
+/* ─ Texte accent → rouge exhaust */
+.backoffice-theme .text-bmw-blue,
+.backoffice-theme .text-bmw-blue-dark { color: var(--exhaust-orange) !important; }
+
+/* ─ Texte success (prix accepté) → vert clair */
+.backoffice-theme .text-green-700,
+.backoffice-theme .text-green-800 { color: #4ade80 !important; }
+
+/* ─ Liens retour / hover links */
+.backoffice-theme a.text-gray-400:hover { color: var(--exhaust-orange) !important; }
+
+/* ─ Fonds sombres */
+.backoffice-theme .bg-white,
+.backoffice-theme .bg-gray-50,
+.backoffice-theme .bg-gray-100,
+.backoffice-theme .bg-gray-200 { background-color: #121212 !important; }
+
+/* ─ Fonds colorés (icônes, badges) → semi-transparents sombres */
+.backoffice-theme .bg-blue-50,
+.backoffice-theme .bg-green-50,
+.backoffice-theme .bg-amber-50,
+.backoffice-theme .bg-purple-50,
+.backoffice-theme .bg-red-50 { background-color: rgba(255,255,255,0.07) !important; }
+
+/* ─ Hover sur items liste */
+.backoffice-theme .hover\:bg-gray-50:hover { background-color: rgba(255,255,255,0.05) !important; }
+
+/* ─ Bordures */
+.backoffice-theme .border-gray-100,
+.backoffice-theme .border-gray-200,
+.backoffice-theme .border-blue-100,
+.backoffice-theme .border-blue-200,
+.backoffice-theme .border-green-100,
+.backoffice-theme .divide-gray-50 { border-color: rgba(255,255,255,0.08) !important; }
+
+/* ─ Icônes colorées dans fonds sombres */
+.backoffice-theme .text-bmw-blue,
+.backoffice-theme .text-blue-500,
+.backoffice-theme .text-blue-600 { color: var(--exhaust-orange) !important; }
+
+/* ─ Inputs / placeholders */
+.backoffice-theme input:not([class*="bg-"]),
+.backoffice-theme textarea:not([class*="bg-"]),
+.backoffice-theme select:not([class*="bg-"]) {
+  background-color: #1a1a1a !important;
+  color: #f3f4f6 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* ─ Signature blocks (bg-gray-50 inside) */
+.backoffice-theme [class*="bg-gray-50"] { background-color: rgba(255,255,255,0.04) !important; }
+
+/* ── Print ── */
+@media print {
+  body { background: white; }
+  .no-print { display: none !important; }
+}

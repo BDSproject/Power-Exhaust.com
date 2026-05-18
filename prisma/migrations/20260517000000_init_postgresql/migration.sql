@@ -245,7 +245,8 @@ CREATE TABLE "chat_messages" (
     CONSTRAINT "chat_messages_pkey" PRIMARY KEY ("id")
 );
 
-ALTER TABLE "chat_messages" ADD CONSTRAINT "chat_messages_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "chat_conversations"("id") ON DELETE CASCADE ON UPDATE CASCADE; ADD CONSTRAINT "accounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "chat_messages" ADD CONSTRAINT "chat_messages_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "chat_conversations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "exhaust_models" ADD CONSTRAINT "exhaust_models_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "exhaust_brands"("id") ON UPDATE CASCADE;
 ALTER TABLE "exhaust_prices" ADD CONSTRAINT "exhaust_prices_modelId_fkey" FOREIGN KEY ("modelId") REFERENCES "exhaust_models"("id") ON UPDATE CASCADE;

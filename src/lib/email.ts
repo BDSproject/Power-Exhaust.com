@@ -1,21 +1,15 @@
 /**
  * Service d'envoi d'emails — Power Exhaust
- * Utilise Nodemailer (SMTP configurable via .env)
+ * Utilise Resend (https://resend.com)
  */
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-// ─── Transporter ─────────────────────────────────────────────────────────────
+// ─── Client Resend ────────────────────────────────────────────────────────────
 
-function createTransporter() {
-  return nodemailer.createTransport({
-    host:   process.env.SMTP_HOST ?? "smtp.gmail.com",
-    port:   Number(process.env.SMTP_PORT ?? 587),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: {
-      user: process.env.SMTP_USER ?? "",
-      pass: process.env.SMTP_PASS ?? "",
-    },
-  });
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error("RESEND_API_KEY est manquante dans les variables d'environnement.");
+  return new Resend(apiKey);
 }
 
 const FROM = process.env.SMTP_FROM ?? "Power Exhaust <noreply@power-exhaust.com>";
@@ -124,19 +118,16 @@ export async function sendAdminDossierEmail(rachat: RachatEmailData): Promise<vo
     if (rachat.photos) photos = JSON.parse(rachat.photos) as string[];
   } catch { /* ignore */ }
 
-  // Inline images CID list
-  const photoCids = photos.map((_, i) => `photo_${i}`);
-
   const photosHtml = photos.length > 0
     ? `<table cellpadding="0" cellspacing="0" style="margin-top:12px;">
         <tr>
-          ${photos.map((_, i) => `<td style="padding:0 4px 0 0;"><img src="cid:${photoCids[i]}" alt="Photo ${i+1}" style="width:120px;height:90px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.1);" /></td>`).join("")}
+          ${photos.map((src, i) => `<td style="padding:0 4px 0 0;"><img src="${src}" alt="Photo ${i+1}" style="width:120px;height:90px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.1);" /></td>`).join("")}
         </tr>
       </table>`
     : `<p style="color:#666;font-size:13px;margin:8px 0 0;">Aucune photo fournie.</p>`;
 
   const signatureHtml = rachat.signatureVendeur
-    ? `<img src="cid:signature_vendeur" alt="Signature vendeur" style="max-width:280px;background:#fff;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.1);" />`
+    ? `<img src="${rachat.signatureVendeur}" alt="Signature vendeur" style="max-width:280px;background:#fff;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.1);" />`
     : `<p style="color:#666;font-size:13px;">Non fournie</p>`;
 
   const body = `
@@ -223,39 +214,12 @@ export async function sendAdminDossierEmail(rachat: RachatEmailData): Promise<vo
     </p>
   `;
 
-  // Build attachments
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const attachments: any[] = [];
-
-  photos.forEach((dataUrl, i) => {
-    const [header, data] = dataUrl.split(",");
-    const mime = header.match(/data:(.*?);/)?.[1] ?? "image/jpeg";
-    const ext  = mime.split("/")[1] ?? "jpg";
-    attachments.push({
-      filename: `photo_${i + 1}.${ext}`,
-      content: Buffer.from(data, "base64"),
-      contentType: mime,
-      cid: `photo_${i}`,
-    });
-  });
-
-  if (rachat.signatureVendeur) {
-    const [, data] = rachat.signatureVendeur.split(",");
-    attachments.push({
-      filename: "signature.png",
-      content: Buffer.from(data, "base64"),
-      contentType: "image/png",
-      cid: "signature_vendeur",
-    });
-  }
-
-  const transporter = createTransporter();
-  await transporter.sendMail({
+  const resend = getResend();
+  await resend.emails.send({
     from:    FROM,
     to:      ADMIN_EMAIL,
     subject: `[Power Exhaust] Nouvelle demande de rachat — ${rachat.prenomVendeur} ${rachat.nomVendeur} · ${rachat.typeEchappement}`,
     html:    emailWrapper("Nouvelle demande de rachat", body),
-    attachments,
   });
 }
 
@@ -329,8 +293,8 @@ export async function sendClientConfirmationEmail(rachat: RachatEmailData): Prom
     </p>
   `;
 
-  const transporter = createTransporter();
-  await transporter.sendMail({
+  const resend = getResend();
+  await resend.emails.send({
     from:    FROM,
     to:      rachat.emailVendeur,
     subject: `[Power Exhaust] Demande reçue — Réf. ${rachat.reference}`,
@@ -382,8 +346,8 @@ export async function sendClientValidationEmail(
     </p>
   `;
 
-  const transporter = createTransporter();
-  await transporter.sendMail({
+  const resend = getResend();
+  await resend.emails.send({
     from:    FROM,
     to:      rachat.emailVendeur,
     subject: `[Power Exhaust] Dossier validé — Votre bordereau d'expédition · Réf. ${rachat.reference}`,
@@ -391,7 +355,7 @@ export async function sendClientValidationEmail(
     attachments: [
       {
         filename:    `bordereau-${rachat.reference}.pdf`,
-        content:     Buffer.from(bordereauBuffer),
+        content:     Buffer.from(bordereauBuffer).toString("base64"),
         contentType: "application/pdf",
       },
     ],
@@ -431,8 +395,8 @@ export async function sendClientRejectionEmail(
     </p>
   `;
 
-  const transporter = createTransporter();
-  await transporter.sendMail({
+  const resend = getResend();
+  await resend.emails.send({
     from:    FROM,
     to:      rachat.emailVendeur,
     subject: `[Power Exhaust] Demande de rachat non retenue — Réf. ${rachat.reference}`,
@@ -604,8 +568,8 @@ export async function sendStatusChangeEmail(params: {
     </p>
   `;
 
-  const transporter = createTransporter();
-  await transporter.sendMail({
+  const resend = getResend();
+  await resend.emails.send({
     from:    FROM,
     to:      params.emailVendeur,
     subject: `[Power Exhaust] ${cfg.subject} — Réf. ${params.reference}`,

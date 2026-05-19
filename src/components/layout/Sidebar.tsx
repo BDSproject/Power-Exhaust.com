@@ -7,6 +7,7 @@ import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import LanguageSwitcherSimple from "@/components/LanguageSwitcherSimple";
+import { PowerExhaustLogo } from "@/components/ui/Logo";
 import {
   LayoutDashboard, Wrench, FileText, Settings, Users, Tag,
   LogOut, Menu, X, MessageCircle, type LucideIcon
@@ -34,11 +35,7 @@ export function Sidebar() {
     <aside className="hidden md:flex flex-col w-64 min-h-screen bg-exhaust-dark border-r border-white/5">
       {/* Logo */}
       <div className="p-6 border-b border-white/5">
-        <Link href="/">
-          <span className="font-black text-xl tracking-tight leading-none">
-            <span className="text-white">POWER-</span><span className="text-exhaust-orange">EXHAUST</span>
-          </span>
-        </Link>
+        <PowerExhaustLogo size="sm" href="/" />
       </div>
 
       {/* Navigation */}
@@ -124,12 +121,7 @@ export function Header() {
   return (
     <header className="md:hidden bg-exhaust-dark text-white sticky top-0 z-50 border-b border-white/5">
       <div className="flex items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-exhaust-orange flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="currentColor"><path d="M12 2L4 6v6c0 5.5 3.5 9.7 8 11 4.5-1.3 8-5.5 8-11V6L12 2z" opacity=".3"/><path d="M12 2L4 6v6c0 5.5 3.5 9.7 8 11 4.5-1.3 8-5.5 8-11V6L12 2zm0 2.2l6 3.3V12c0 4.5-2.8 7.9-6 9.1-3.2-1.2-6-4.6-6-9.1V7.5l6-3.3z"/></svg>
-          </div>
-          <span className="font-black text-sm"><span className="text-white">POWER-</span><span className="text-exhaust-orange">EXHAUST</span></span>
-        </Link>
+        <PowerExhaustLogo size="sm" href="/" />
         <div className="flex items-center gap-2">
           <LanguageSwitcherSimple />
           <button

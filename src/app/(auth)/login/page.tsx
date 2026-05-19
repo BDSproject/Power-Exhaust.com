@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/LoginForm";
 import LanguageSwitcherSimple from "@/components/LanguageSwitcherSimple";
+import { PowerExhaustLogo } from "@/components/ui/Logo";
 
 export const metadata: Metadata = {
   title: "Connexion",
@@ -15,11 +16,9 @@ export default function LoginPage() {
         <LanguageSwitcherSimple />
       </div>
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2.5 mb-12">
-        <span className="font-black text-2xl tracking-tight leading-none">
-          <span className="text-white">POWER-</span><span className="text-exhaust-orange">EXHAUST</span>
-        </span>
-      </Link>
+      <div className="mb-12">
+        <PowerExhaustLogo size="md" href="/" />
+      </div>
 
       <div className="w-full max-w-[400px]">
         <div className="bg-white/5 border border-white/10 rounded-2xl px-10 py-10">

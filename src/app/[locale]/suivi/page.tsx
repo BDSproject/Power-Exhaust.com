@@ -9,6 +9,7 @@ import {
   Trophy, ArrowLeft, ExternalLink, RefreshCw,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { PowerExhaustLogo } from "@/components/ui/Logo";
 
 /* ─── Types ─────────────────────────────────────────────────────────────────── */
 interface TimelineStep {
@@ -111,8 +112,7 @@ export default function SuiviPage({ params }: { params: { locale: string } }) {
       <header className="border-b border-white/8 bg-[#0d0d0d]">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-exhaust-orange flex items-center justify-center text-white font-black text-sm">PE</div>
-            <span className="font-bold text-white text-lg hidden sm:block">Power Exhaust</span>
+            <PowerExhaustLogo size="sm" href="/" />
           </Link>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm text-gray-500">

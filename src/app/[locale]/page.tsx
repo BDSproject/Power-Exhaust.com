@@ -4,6 +4,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import TrackingWidget from "@/components/home/TrackingWidget";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslations } from "next-intl";
+import { PowerExhaustLogo } from "@/components/ui/Logo";
 import { getTranslations } from "next-intl/server";
 import {
   Tag, Search, CheckCircle2, Banknote, Package, Zap,
@@ -76,11 +77,7 @@ export default function HomePage() {
       {/* ── NAVBAR ── */}
       <nav className="sticky top-0 z-50 bg-[#111111]/95 backdrop-blur border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="font-black text-xl tracking-tight leading-none">
-              <span className="text-white">POWER-</span><span className="text-exhaust-orange">EXHAUST</span>
-            </span>
-          </Link>
+          <PowerExhaustLogo size="sm" href="/" />
 
           <div className="hidden md:flex items-center gap-8 text-sm text-gray-400 font-medium">
             <a href="#comment-ca-marche" className="hover:text-white transition-colors">
@@ -448,9 +445,9 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="grid md:grid-cols-4 gap-12">
             <div className="md:col-span-2">
-              <p className="font-black text-xl tracking-tight leading-none mb-5">
-                <span className="text-white">POWER-</span><span className="text-exhaust-orange">EXHAUST</span>
-              </p>
+              <div className="mb-5">
+                <PowerExhaustLogo size="sm" href="/" />
+              </div>
               <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
                 {t("footer.tagline")}
               </p>

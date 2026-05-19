@@ -7,6 +7,7 @@ import {
   CheckCircle2, Clock, AlertTriangle, XCircle,
   Trophy, ArrowLeft, ExternalLink, RefreshCw,
 } from "lucide-react";
+import LanguageSwitcherSimple from "@/components/LanguageSwitcherSimple";
 
 /* ─── Types ─────────────────────────────────────────────────────────────────── */
 interface TimelineStep {
@@ -118,9 +119,12 @@ export default function SuiviPage() {
             <div className="w-9 h-9 rounded-xl bg-exhaust-orange flex items-center justify-center text-white font-black text-sm">PE</div>
             <span className="font-bold text-white text-lg hidden sm:block">Power Exhaust</span>
           </Link>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Package className="w-4 h-4" />
-            <span>Suivi de rachat</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Package className="w-4 h-4" />
+              <span>Suivi de rachat</span>
+            </div>
+            <LanguageSwitcherSimple />
           </div>
         </div>
       </header>

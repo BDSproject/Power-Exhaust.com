@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import LanguageSwitcherSimple from "@/components/LanguageSwitcherSimple";
 import {
   LayoutDashboard, Wrench, FileText, Settings, Users, Tag,
   LogOut, Menu, X, MessageCircle, type LucideIcon
@@ -129,12 +130,15 @@ export function Header() {
           </div>
           <span className="font-black text-sm"><span className="text-white">POWER-</span><span className="text-exhaust-orange">EXHAUST</span></span>
         </Link>
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white"
-        >
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <LanguageSwitcherSimple />
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white"
+          >
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {menuOpen && (

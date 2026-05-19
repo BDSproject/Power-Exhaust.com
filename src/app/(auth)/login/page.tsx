@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/LoginForm";
+import LanguageSwitcherSimple from "@/components/LanguageSwitcherSimple";
 
 export const metadata: Metadata = {
   title: "Connexion",
@@ -9,6 +10,10 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-exhaust-dark flex flex-col items-center justify-center px-6 py-16">
+      {/* Language switcher top-right */}
+      <div className="fixed top-4 right-4">
+        <LanguageSwitcherSimple />
+      </div>
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5 mb-12">
         <span className="font-black text-2xl tracking-tight leading-none">

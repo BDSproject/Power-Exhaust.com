@@ -41,6 +41,13 @@ export default auth((req: NextRequest & { auth: { user?: { role?: string } } | n
     return NextResponse.next();
   }
 
+  // Skip i18n if already on a locale-prefixed path or root (avoid redirect loop)
+  const locales = ["fr", "en", "de", "es", "it", "pt", "nl", "pl"];
+  const isLocalePrefixed = locales.some((l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`));
+  if (isLocalePrefixed) {
+    return NextResponse.next();
+  }
+
   // Apply i18n middleware for public locale routes only
   return intlMiddleware(req as NextRequest);
 });

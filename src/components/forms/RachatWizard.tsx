@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 import {
   Check, ChevronLeft, ChevronRight, Tag, User,
   CheckCircle2, Camera, X, MessageSquare, PenLine, AlertTriangle,
-  Car, Zap, Package, MapPin, Truck, Clock, Banknote, Lock, Shield,
+  Zap, Package, MapPin, Truck, Clock, Banknote, Lock, Shield,
 } from "lucide-react";
 import { SignaturePad } from "@/components/forms/SignaturePad";
 
@@ -86,6 +86,7 @@ function PhotoSlot({
 }
 
 // ─── Compteur animé ──────────────────────────────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function AnimatedPrice({ target }: { target: number }) {
   const [displayed, setDisplayed] = useState(0);
   const [visible, setVisible] = useState(false);
@@ -424,7 +425,6 @@ export function RachatWizard() {
 
   const [step, setStep] = useState(1);
   const [brands, setBrands] = useState<ExhaustBrand[]>([]);
-  const [loadingBrands, setLoadingBrands] = useState(true);
   const [exhaustBrandId, setExhaustBrandId] = useState<string>("");
   const [exhaustModels, setExhaustModels] = useState<ExhaustModel[]>([]);
   const [selectedEtat, setSelectedEtat] = useState<string | null>(null);
@@ -432,7 +432,7 @@ export function RachatWizard() {
   const [previews, setPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
   const [submitted, setSubmitted] = useState(false);
   const [referenceId, setReferenceId] = useState<string | null>(null);
-  const [rachatId, setRachatId] = useState<string | null>(null);
+  const [, setRachatId] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [signatureError, setSignatureError] = useState<string | null>(null);
   const [ribFile, setRibFile] = useState<File | null>(null);
@@ -458,8 +458,8 @@ export function RachatWizard() {
   useEffect(() => {
     fetch("/api/catalogue/marques")
       .then((r) => r.json())
-      .then((data) => { setBrands(data); setLoadingBrands(false); })
-      .catch(() => setLoadingBrands(false));
+      .then((data) => { setBrands(data); })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {

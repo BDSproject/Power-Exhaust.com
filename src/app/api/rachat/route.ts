@@ -8,7 +8,7 @@ import { getPrixRachat, type EtatRachat } from "@/data/prices";
 import { sendAdminDossierEmail, sendClientConfirmationEmail } from "@/lib/email";
 import type { RachatEmailData } from "@/lib/email";
 // GET — Lister les rachats de l'utilisateur connecté
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     const session = await auth();
     if (!session) {

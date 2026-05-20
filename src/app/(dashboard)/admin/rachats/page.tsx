@@ -114,6 +114,7 @@ export default function AdminRachatsPage() {
     });
     if (res.ok) {
       const att = await res.json();
+      // eslint-disable-next-line react-hooks/immutability
       window.location.href = `/attestations/${att.id}`;
     }
   };

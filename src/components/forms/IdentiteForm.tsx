@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
 
 type TypePiece = "CARTE_IDENTITE" | "PASSEPORT" | "TITRE_SEJOUR" | "PERMIS_CONDUIRE";
 
@@ -26,7 +25,6 @@ interface FilePreview {
 }
 
 export default function IdentiteForm({ rachatId, token }: Props) {
-  const router = useRouter();
   const [step, setStep] = useState<"form" | "success">("form");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -132,7 +130,7 @@ export default function IdentiteForm({ rachatId, token }: Props) {
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
         <div className="bg-[#111] border border-white/10 rounded-2xl p-10 max-w-md w-full text-center">
           <div className="text-5xl mb-6">✅</div>
-          <h1 className="text-2xl font-black text-white mb-3">Pièce d'identité envoyée</h1>
+          <h1 className="text-2xl font-black text-white mb-3">Pièce d&apos;identité envoyée</h1>
           <p className="text-gray-400 text-sm leading-relaxed mb-8">
             Votre document a été reçu et chiffré de manière sécurisée.
             Il sera automatiquement supprimé après <strong className="text-white">30 jours</strong> conformément au RGPD.
@@ -143,7 +141,7 @@ export default function IdentiteForm({ rachatId, token }: Props) {
             </p>
             <p className="text-gray-400 text-xs leading-relaxed">
               Ces informations sont conservées conformément aux obligations légales
-              applicables aux professionnels du rachat de biens d'occasion.
+              applicables aux professionnels du rachat de biens d&apos;occasion.
             </p>
           </div>
           <p className="text-gray-500 text-xs">
@@ -160,11 +158,11 @@ export default function IdentiteForm({ rachatId, token }: Props) {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-block bg-orange-500/10 border border-orange-500/30 rounded-full px-4 py-1.5 text-orange-400 text-xs font-bold uppercase tracking-wider mb-4">
-            🪪 Vérification d'identité
+            🪪 Vérification d&apos;identité
           </div>
-          <h1 className="text-3xl font-black text-white mb-2">Envoyez votre pièce d'identité</h1>
+          <h1 className="text-3xl font-black text-white mb-2">Envoyez votre pièce d&apos;identité</h1>
           <p className="text-gray-400 text-sm">
-            Obligatoire conformément à l'article R321-3 du Code de la Sécurité Intérieure
+            Obligatoire conformément à l&apos;article R321-3 du Code de la Sécurité Intérieure
           </p>
         </div>
 
@@ -358,7 +356,7 @@ export default function IdentiteForm({ rachatId, token }: Props) {
 
             {!versoRequis && (
               <p className="text-gray-600 text-xs">
-                Le passeport ne nécessite qu'une seule photo (page avec votre photo).
+                Le passeport ne nécessite qu&apos;une seule photo (page avec votre photo).
               </p>
             )}
           </div>
@@ -375,8 +373,8 @@ export default function IdentiteForm({ rachatId, token }: Props) {
                 className="mt-0.5 w-4 h-4 accent-orange-500 shrink-0"
               />
               <span className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
-                <strong className="text-white">J'autorise le traitement de mes données personnelles</strong>{" "}
-                par Power Exhaust aux fins de vérification d'identité, conformément à l'article R321-3 CSI
+                <strong className="text-white">J&apos;autorise le traitement de mes données personnelles</strong>{" "}
+                par Power Exhaust aux fins de vérification d&apos;identité, conformément à l&apos;article R321-3 CSI
                 et au RGPD (base légale : obligation légale).
               </span>
             </label>
@@ -389,7 +387,7 @@ export default function IdentiteForm({ rachatId, token }: Props) {
                 className="mt-0.5 w-4 h-4 accent-orange-500 shrink-0"
               />
               <span className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
-                <strong className="text-white">J'accepte la conservation pendant 30 jours</strong>{" "}
+                <strong className="text-white">J&apos;accepte la conservation pendant 30 jours</strong>{" "}
                 des fichiers fournis, après quoi ils seront automatiquement et définitivement supprimés.
                 Les données légales (nom, type et numéro de pièce) seront conservées plus longtemps
                 conformément aux obligations légales.

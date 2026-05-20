@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/db";
-import { formatDate, getStatutColor, getStatutLabel } from "@/lib/utils";
+import { formatDate, getStatutColor } from "@/lib/utils";
 import { Card, CardContent, Badge } from "@/components/ui";
 import { FileText, Eye, CheckCircle, Clock, AlertCircle } from "lucide-react";
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
-  Search, Loader2, ChevronRight, Package,
+  Search, Loader2, Package,
   CheckCircle2, Clock, AlertTriangle, XCircle,
   Trophy, ArrowLeft, ExternalLink, RefreshCw,
 } from "lucide-react";

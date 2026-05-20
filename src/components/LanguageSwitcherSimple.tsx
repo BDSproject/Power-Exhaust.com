@@ -48,6 +48,7 @@ export default function LanguageSwitcherSimple() {
   const switchLocale = (code: string) => {
     setOpen(false);
     // Stocker le cookie (365 jours)
+    // eslint-disable-next-line react-hooks/immutability
     document.cookie = `NEXT_LOCALE=${code}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
     setLocale(code);
     // Recharger la page pour que le middleware next-intl applique la nouvelle locale

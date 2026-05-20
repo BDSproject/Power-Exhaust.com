@@ -117,9 +117,9 @@ export function SignatureBlock({
           {role === "vendeur" ? (
             <p>
               Je soussigné(e), {rachat.prenomVendeur} {rachat.nomVendeur}, déclare
-              céder à titre onéreux la ligne d'échappement décrite ci-dessus pour le
+              céder à titre onéreux la ligne d&apos;échappement décrite ci-dessus pour le
               montant de {formatPrice(attestation.prixFinal)}, et certifie être
-              l'unique propriétaire de cette pièce, libre de tout gage ou opposition.
+              l&apos;unique propriétaire de cette pièce, libre de tout gage ou opposition.
             </p>
           ) : (
             <p>

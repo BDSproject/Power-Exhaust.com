@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
-import { createShipment, fetchLabel, SendCloudError } from "@/lib/sendcloud";
 import { sendClientValidationEmail } from "@/lib/email";
 import type { RachatEmailData } from "@/lib/email";
 
@@ -59,35 +58,9 @@ export async function GET(
       });
     }
 
-    // ── Créer l'expédition SendCloud ──────────────────────────────────────────
-    let bordereauBuffer: ArrayBuffer | null = null;
-    let parcelRef: string | null = null;
-
-    try {
-      const shipment = await createShipment(
-        {
-          firstName: rachat.prenomVendeur,
-          lastName:  rachat.nomVendeur,
-          street1:   rachat.adresseVendeur,
-          city:      rachat.villeVendeur,
-          postCode:  rachat.codePostalVendeur,
-          country:   "FR",
-          email:     rachat.emailVendeur,
-          mobile:    rachat.telVendeur ?? "",
-        },
-        {
-          weight: rachat.poidsKg ?? 2,
-          length: rachat.longueurCm ?? 30,
-          width:  rachat.largeurCm  ?? 20,
-          height: rachat.hauteurCm  ?? 15,
-        }
-      );
-      parcelRef = shipment.reference;
-      bordereauBuffer = await fetchLabel(parcelRef);
-    } catch (err) {
-      console.error("[VALIDER] SendCloud error:", err instanceof SendCloudError ? err.message : err);
-      // Continue without bordereau — admin can retry
-    }
+    // ── Expédition (non configurée) ──────────────────────────────────────────
+    const bordereauBuffer: ArrayBuffer | null = null;
+    const parcelRef: string | null = null;
 
     // ── Mettre à jour le statut ───────────────────────────────────────────────
     await prisma.rachat.update({
@@ -114,7 +87,7 @@ export async function GET(
     return new NextResponse(
       htmlSuccess(
         `Dossier validé !`,
-        `${rachat.prenomVendeur} ${rachat.nomVendeur} — Réf. ${rachat.reference}<br/>${bordereauBuffer ? "Bordereau envoyé par email au client." : "<strong style='color:#f59e0b'>⚠️ Bordereau non généré (erreur SendCloud) — vérifiez les clés API.</strong>"}`
+        `${rachat.prenomVendeur} ${rachat.nomVendeur} — Réf. ${rachat.reference}<br/>${bordereauBuffer ? "Bordereau envoyé par email au client." : "<strong style='color:#f59e0b'>⚠️ Bordereau non généré — service d'expédition non configuré.</strong>"}`
       ),
       { status: 200, headers: { "Content-Type": "text/html" } }
     );

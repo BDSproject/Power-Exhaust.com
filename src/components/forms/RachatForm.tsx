@@ -212,7 +212,7 @@ export function RachatForm({ defaultValues }: RachatFormProps) {
             <CardHeader>
               <h2 className="font-bold text-gray-900 text-lg flex items-center gap-2">
                 <span className="w-7 h-7 rounded-lg bg-bmw-blue text-white text-sm flex items-center justify-center font-bold">2</span>
-                Informations sur l'échappement
+                Informations sur l&apos;échappement
               </h2>
               <p className="text-sm text-gray-600 mt-1">Décrivez précisément votre échappement moto</p>
             </CardHeader>
@@ -318,7 +318,7 @@ export function RachatForm({ defaultValues }: RachatFormProps) {
                 <p className="text-sm text-gray-600">{watch("typeEchappement")}</p>
                 <p className="text-sm text-gray-600">État : {ETATS.find(e => e.value === watch("etatEchappement"))?.label}</p>
                 {watch("description") && (
-                  <p className="text-sm text-gray-500 italic">"{watch("description")}"</p>
+                  <p className="text-sm text-gray-500 italic">&quot;{watch("description")}&quot;</p>
                 )}
               </div>
 

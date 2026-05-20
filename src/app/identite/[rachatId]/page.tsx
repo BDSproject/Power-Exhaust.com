@@ -43,11 +43,11 @@ export default async function IdentitePage({ params, searchParams }: Props) {
           <div className="text-5xl mb-6">✅</div>
           <h1 className="text-2xl font-black text-white mb-3">Document déjà reçu</h1>
           <p className="text-gray-400 text-sm leading-relaxed mb-4">
-            Votre pièce d'identité a déjà été soumise pour la demande{" "}
+            Votre pièce d&apos;identité a déjà été soumise pour la demande{" "}
             <span className="text-orange-400 font-mono">{rachat.reference}</span>.
           </p>
           <p className="text-gray-500 text-xs">
-            Notre équipe l'examinera prochainement. En cas de question :{" "}
+            Notre équipe l&apos;examinera prochainement. En cas de question :{" "}
             <a href="mailto:contact@power-exhaust.com" className="text-orange-400">
               contact@power-exhaust.com
             </a>

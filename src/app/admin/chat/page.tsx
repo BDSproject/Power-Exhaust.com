@@ -51,19 +51,19 @@ export default function AdminChatPage() {
   };
 
   useEffect(() => {
-    fetchConversations();
+    fetchConversations(); // eslint-disable-line
     const interval = setInterval(fetchConversations, 6000);
     return () => clearInterval(interval);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (selected) {
-      fetchMessages(selected.id);
+      fetchMessages(selected.id); // eslint-disable-line
       if (pollRef.current) clearInterval(pollRef.current);
       pollRef.current = setInterval(() => fetchMessages(selected.id), 4000);
     }
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
-  }, [selected]);
+  }, [selected]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

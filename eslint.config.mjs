@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Utility scripts (CommonJS)
+    "fix-admin-hash.js",
+    "patch-24h.js",
+    "patch-wizard.js",
+    "scripts/**",
   ]),
 ]);
 

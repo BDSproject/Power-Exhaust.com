@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { LoginForm } from "@/components/auth/LoginForm";
 import LanguageSwitcherSimple from "@/components/LanguageSwitcherSimple";
 import { PowerExhaustLogo } from "@/components/ui/Logo";

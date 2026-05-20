@@ -7,7 +7,6 @@ import {
   View,
   StyleSheet,
   Image,
-  Font,
 } from "@react-pdf/renderer";
 import type { AttestationType, RachatType } from "@/types";
 import { format } from "date-fns";
@@ -258,7 +257,7 @@ export function AttestationPDF({ attestation, rachat }: AttestationPDFProps) {
           <View style={styles.headerLeft}>
             <Text style={styles.companyName}>ALCHIMISTE BMW</Text>
             <Text style={styles.companySubtitle}>
-              RACHAT DE LIGNES D'ÉCHAPPEMENT — TOUS MODÈLES
+              {"RACHAT DE LIGNES D'ÉCHAPPEMENT — TOUS MODÈLES"}
             </Text>
           </View>
           <View style={styles.headerRight}>
@@ -315,7 +314,7 @@ export function AttestationPDF({ attestation, rachat }: AttestationPDFProps) {
                 </Text>
               </View>
               <View style={styles.col}>
-                <Text style={styles.fieldLabel}>L'Acheteur</Text>
+                <Text style={styles.fieldLabel}>{"L'Acheteur"}</Text>
                 <Text style={styles.fieldValue}>ALCHIMISTE BMW</Text>
                 <Text style={{ fontSize: 9, color: "#6B7280", marginTop: 4 }}>
                   contact@alchimistebmw.com
@@ -324,7 +323,7 @@ export function AttestationPDF({ attestation, rachat }: AttestationPDFProps) {
                   SIRET : XXX XXX XXX XXXXX
                 </Text>
                 <Text style={{ fontSize: 9, color: "#6B7280", marginTop: 2 }}>
-                  XXX Rue de l'Alchimiste
+                  {"XXX Rue de l'Alchimiste"}
                 </Text>
                 <Text style={{ fontSize: 9, color: "#6B7280" }}>
                   75000 Paris
@@ -358,7 +357,7 @@ export function AttestationPDF({ attestation, rachat }: AttestationPDFProps) {
             </View>
             <View style={styles.row}>
               <View style={styles.col}>
-                <Text style={styles.fieldLabel}>Type d'échappement</Text>
+                <Text style={styles.fieldLabel}>{"Type d'échappement"}</Text>
                 <Text style={styles.fieldValue}>{rachat.typeEchappement}</Text>
               </View>
               <View style={styles.col}>
@@ -399,6 +398,8 @@ export function AttestationPDF({ attestation, rachat }: AttestationPDFProps) {
                   <Image
                     src={attestation.signatureVendeur}
                     style={styles.signatureImage}
+                    // @ts-expect-error react-pdf Image alt not typed
+                    alt=""
                   />
                 ) : (
                   <View style={{ height: 60 }} />
@@ -415,12 +416,14 @@ export function AttestationPDF({ attestation, rachat }: AttestationPDFProps) {
               {/* Acheteur */}
               <View style={styles.signatureBox}>
                 <Text style={styles.signatureTitle}>
-                  Signature de l'acheteur{"\n"}Alchimiste BMW
+                  {"Signature de l'acheteur\nAlchimiste BMW"}
                 </Text>
                 {attestation.signatureAcheteur ? (
                   <Image
                     src={attestation.signatureAcheteur}
                     style={styles.signatureImage}
+                    // @ts-expect-error react-pdf Image alt not typed
+                    alt=""
                   />
                 ) : (
                   <View style={{ height: 60 }} />

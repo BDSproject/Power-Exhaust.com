@@ -443,7 +443,7 @@ export default function HomePage() {
               <h4 className="font-bold mb-4 text-sm uppercase tracking-wider text-gray-300">{t("footer.contact_title")}</h4>
               <ul className="space-y-2.5 text-gray-400 text-sm">
                 <li className="flex items-center gap-2"><Mail className="w-3.5 h-3.5 flex-shrink-0" /> contact@power-exhaust.com</li>
-                <li className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 flex-shrink-0" /> +33 1 .. .. .. ..</li>
+                <li className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 flex-shrink-0" /> +33 6 98 11 00 29.</li>
                 <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 flex-shrink-0" /> {t("footer.hours")}</li>
               </ul>
             </div>

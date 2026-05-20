@@ -17,7 +17,7 @@ export default auth((req: NextRequest & { auth: { user?: { role?: string } } | n
     return NextResponse.next();
   }
 
-  // Auth redirects (locale-aware paths)
+  // Auth redirects
   const isAuthPage = /\/login$/.test(pathname);
   const isDashboard = /\/(dashboard|rachats|attestations)/.test(pathname);
   const isAdmin = /\/admin/.test(pathname);
@@ -35,20 +35,13 @@ export default auth((req: NextRequest & { auth: { user?: { role?: string } } | n
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  // Skip i18n for back-office / auth routes (not locale-prefixed)
+  // Skip i18n for back-office / auth routes
   const isBackOffice = /^\/(dashboard|admin|rachats|attestations|login|identite|suivi)(\/|$)/.test(pathname);
   if (isBackOffice) {
     return NextResponse.next();
   }
 
-  // Skip i18n if already on a locale-prefixed path or root (avoid redirect loop)
-  const locales = ["fr", "en", "de", "es", "it", "pt", "nl", "pl"];
-  const isLocalePrefixed = locales.some((l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`));
-  if (isLocalePrefixed) {
-    return NextResponse.next();
-  }
-
-  // Apply i18n middleware for public locale routes only
+  // Apply i18n middleware for all public routes (including /en, /de/rachat, etc.)
   return intlMiddleware(req as NextRequest);
 });
 

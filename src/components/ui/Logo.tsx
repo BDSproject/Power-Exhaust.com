@@ -8,34 +8,16 @@ interface LogoProps {
 }
 
 export function PowerExhaustLogo({ className = "", size = "md", href = "/" }: LogoProps) {
-  const dimensions = {
-    sm: { w: 130, h: 36, iconW: 28, iconH: 28 },
-    md: { w: 160, h: 44, iconW: 36, iconH: 36 },
-    lg: { w: 200, h: 56, iconW: 44, iconH: 44 },
+  const fontSizes = {
+    sm: "text-xl",
+    md: "text-2xl",
+    lg: "text-3xl",
   }[size];
 
   const content = (
-    <span className={`flex items-center gap-2.5 ${className}`}>
-      {/* Icon mark — stylized P */}
-      <span
-        className="flex-shrink-0 flex items-center justify-center rounded-lg bg-[#E30613]"
-        style={{ width: dimensions.iconW, height: dimensions.iconH }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" width={dimensions.iconW * 0.65} height={dimensions.iconH * 0.65}>
-          {/* Diagonal slash */}
-          <line x1="3" y1="20" x2="8" y2="4" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-          {/* P letter */}
-          <path d="M8 4 h7 a5 5 0 0 1 0 10 h-7 V4z" fill="white"/>
-        </svg>
-      </span>
-      {/* Wordmark */}
-      <span className="leading-none">
-        <span className="block font-black tracking-tight text-white" style={{ fontSize: dimensions.iconH * 0.38, lineHeight: 1.1 }}>
-          POWER-
-        </span>
-        <span className="block font-black tracking-tight text-[#E30613]" style={{ fontSize: dimensions.iconH * 0.38, lineHeight: 1.1 }}>
-          EXHAUST
-        </span>
+    <span className={`flex items-center ${className}`}>
+      <span className={`font-black tracking-tight leading-none ${fontSizes}`}>
+        <span className="text-white">POWER-</span><span className="text-[#E30613]">EXHAUST</span>
       </span>
     </span>
   );

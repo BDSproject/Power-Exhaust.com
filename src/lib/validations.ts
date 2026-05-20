@@ -11,6 +11,8 @@ export const rachatPublicSchema = z.object({
   exhaustModelId: z.string().optional(),
   prixOfficiel: z.number().optional(),
   typeEchappement: z.string().optional(),
+  marqueEchappement: z.string().optional(),
+  modeleEchappement: z.string().optional(),
   etatEchappement: z.enum(["EXCELLENT", "BON", "MOYEN", "MAUVAIS"]),
   description: z.string().optional(),
   prixPropose: z.number().min(0).optional(),

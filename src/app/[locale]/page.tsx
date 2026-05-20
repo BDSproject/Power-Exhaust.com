@@ -419,27 +419,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SUIVI DOSSIER ── */}
-      <section className="py-20 bg-[#0d0d0d] border-t border-white/5">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-exhaust-orange/10 border border-exhaust-orange/30 rounded-full px-4 py-2 text-exhaust-orange text-xs font-bold uppercase tracking-widest mb-6">
-            <Search className="w-3.5 h-3.5" />
-            {t("tracking.badge")}
-          </div>
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-3">
-            {t("tracking.title")}
-          </h2>
-          <p className="text-gray-400 mb-8 text-base leading-relaxed">
-            {t("tracking.desc")}
-          </p>
-          <TrackingWidget
-            placeholder={t("tracking.placeholder")}
-            btnLabel={t("tracking.btn")}
-          />
-          <p className="mt-5 text-xs text-gray-600">{t("tracking.hint")}</p>
-        </div>
-      </section>
-
       {/* ── FOOTER ── */}
       <footer id="contact" className="bg-exhaust-dark text-white">
         <div className="max-w-7xl mx-auto px-6 py-16">

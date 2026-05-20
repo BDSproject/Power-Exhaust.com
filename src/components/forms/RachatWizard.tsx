@@ -15,6 +15,12 @@ import {
 import { SignaturePad } from "@/components/forms/SignaturePad";
 
 interface ExhaustBrand {
+  id: string;
+  name: string;
+}
+
+interface ExhaustModel {
+  id: string;
   name: string;
 }
 
@@ -301,7 +307,16 @@ function Step3({ selectedEtat, register, handleSubmit, onSubmit, watch, isSubmit
       <div className="space-y-3 mb-8">
         <div className="bg-white/4 border border-white/10 rounded-2xl p-5">
           <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">{t("recap_exhaust")}</p>
-          <p className="font-bold text-white">{watch("typeEchappement")}</p>
+          {(watch("marqueEchappement") || watch("modeleEchappement")) && (
+            <p className="font-bold text-white">
+              {watch("marqueEchappement")}
+              {watch("marqueEchappement") && watch("modeleEchappement") ? " — " : ""}
+              {watch("modeleEchappement")}
+            </p>
+          )}
+          {watch("typeEchappement") && (
+            <p className={`text-sm mt-0.5 ${watch("marqueEchappement") || watch("modeleEchappement") ? "text-gray-400" : "font-bold text-white"}`}>{watch("typeEchappement")}</p>
+          )}
           <span className={`text-sm font-semibold ${etatInfo?.text ?? "text-gray-400"}`}>{etatInfo?.label}</span>
         </div>
 
@@ -410,6 +425,8 @@ export function RachatWizard() {
   const [step, setStep] = useState(1);
   const [brands, setBrands] = useState<ExhaustBrand[]>([]);
   const [loadingBrands, setLoadingBrands] = useState(true);
+  const [exhaustBrandId, setExhaustBrandId] = useState<string>("");
+  const [exhaustModels, setExhaustModels] = useState<ExhaustModel[]>([]);
   const [selectedEtat, setSelectedEtat] = useState<string | null>(null);
   const [photos, setPhotos] = useState<(File | null)[]>([null, null, null, null, null]);
   const [previews, setPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
@@ -432,6 +449,7 @@ export function RachatWizard() {
     formState: { errors, isSubmitting },
     watch,
     trigger,
+    setValue,
   } = useForm<RachatPublicFormData>({
     resolver: zodResolver(rachatPublicSchema),
     defaultValues: {},
@@ -443,6 +461,14 @@ export function RachatWizard() {
       .then((data) => { setBrands(data); setLoadingBrands(false); })
       .catch(() => setLoadingBrands(false));
   }, []);
+
+  useEffect(() => {
+    if (!exhaustBrandId) { setExhaustModels([]); return; }
+    fetch(`/api/catalogue/modeles?marqueId=${exhaustBrandId}`)
+      .then((r) => r.json())
+      .then((data: ExhaustModel[]) => setExhaustModels(data))
+      .catch(() => setExhaustModels([]));
+  }, [exhaustBrandId]);
 
   const handlePhotoFile = (file: File, index: number) => {
     const url = URL.createObjectURL(file);
@@ -696,10 +722,57 @@ export function RachatWizard() {
           </div>
 
           <form onSubmit={(e) => { e.preventDefault(); goToStep3(); }} className="space-y-5">
+            {/* Ligne d'échappement */}
+            <div className="bg-white/3 border border-white/10 rounded-2xl p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <span className="text-exhaust-orange text-base leading-none">🔧</span>
+                <h3 className="font-bold text-white">Ligne d&apos;échappement</h3>
+                <span className="ml-auto text-xs text-gray-600 bg-white/5 px-2 py-0.5 rounded-full">Optionnel</span>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-gray-400 block mb-1.5">Marque</label>
+                  <select
+                    className="w-full px-3 py-2.5 rounded-xl border border-white/15 bg-white/6 text-white text-sm focus:outline-none focus:ring-2 focus:ring-exhaust-orange transition-all"
+                    value={watch("marqueEchappement") ?? ""}
+                    onChange={(e) => {
+                      const selected = brands.find((b) => b.name === e.target.value);
+                      setExhaustBrandId(selected?.id ?? "");
+                      setValue("marqueEchappement", e.target.value);
+                      setValue("modeleEchappement", "");
+                    }}
+                  >
+                    <option value="">Choisir une marque</option>
+                    {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-gray-400 block mb-1.5">Modèle</label>
+                  {exhaustModels.length > 0 ? (
+                    <select
+                      className="w-full px-3 py-2.5 rounded-xl border border-white/15 bg-white/6 text-white text-sm focus:outline-none focus:ring-2 focus:ring-exhaust-orange transition-all"
+                      value={watch("modeleEchappement") ?? ""}
+                      onChange={(e) => setValue("modeleEchappement", e.target.value)}
+                    >
+                      <option value="">Choisir un modèle</option>
+                      {exhaustModels.map((m) => <option key={m.id} value={m.name}>{m.name}</option>)}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder="ex: S-Y10SO22"
+                      className="w-full px-3 py-2.5 rounded-xl border border-white/15 bg-white/6 text-white text-sm placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-exhaust-orange transition-all"
+                      {...register("modeleEchappement")}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Véhicule */}
             <div className="bg-white/3 border border-white/10 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-5">
-                <Car className="w-4 h-4 text-exhaust-orange" />
+                <span className="text-exhaust-orange text-base leading-none">🏍</span>
                 <h3 className="font-bold text-white">{t("vehicle_section")}</h3>
               </div>
               <div className="grid grid-cols-2 gap-4">

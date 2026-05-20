@@ -4,24 +4,13 @@ import prisma from "@/lib/db";
 import { sendClientValidationEmail } from "@/lib/email";
 import type { RachatEmailData } from "@/lib/email";
 
-/**
- * GET /api/rachat/[id]/valider?token=xxx
- *
- * Lien reçu par l'admin dans l'email de dossier.
- * Valide la demande, crée l'expédition SendCloud et envoie le bordereau au client.
- * Redirige vers la page d'admin avec feedback.
- */
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
   const token = req.nextUrl.searchParams.get("token");
-
-  if (!token) {
-    return NextResponse.redirect(new URL("/login?error=token_manquant", req.url));
-  }
-
+  if (!token) return NextResponse.redirect(new URL("/login?error=token_manquant", req.url));
   try {
     const rachat = await prisma.rachat.findUnique({
       where: { id },
@@ -32,95 +21,37 @@ export async function GET(
         codePostalVendeur: true, typeEchappement: true, etatEchappement: true,
         description: true, marque: true, modele: true, annee: true,
         kilometrage: true, poidsKg: true, longueurCm: true, largeurCm: true,
-        hauteurCm: true, prixOfficiel: true, signatureVendeur: true,
-        photos: true, boxtralOrderRef: true,
+        hauteurCm: true, prixOfficiel: true, signatureVendeur: true, photos: true,
       },
     });
-
-    if (!rachat || rachat.adminToken !== token) {
-      return new NextResponse(htmlError("Lien invalide ou expiré."), {
-        status: 400,
-        headers: { "Content-Type": "text/html" },
-      });
-    }
-
-    if (rachat.statut === "VALIDE") {
-      return new NextResponse(htmlInfo("Ce dossier a déjà été validé."), {
-        status: 200,
-        headers: { "Content-Type": "text/html" },
-      });
-    }
-
-    if (rachat.statut === "REFUSE") {
-      return new NextResponse(htmlError("Ce dossier a déjà été refusé."), {
-        status: 400,
-        headers: { "Content-Type": "text/html" },
-      });
-    }
-
-    // ── Expédition (non configurée) ──────────────────────────────────────────
-    const bordereauBuffer: ArrayBuffer | null = null;
-    const parcelRef: string | null = null;
-
-    // ── Mettre à jour le statut ───────────────────────────────────────────────
-    await prisma.rachat.update({
-      where: { id },
-      data: {
-        statut: "VALIDE",
-        ...(parcelRef ? { boxtralOrderRef: parcelRef } : {}),
-      },
-    });
-
-    // ── Envoyer le bordereau au client ────────────────────────────────────────
-    const emailData: RachatEmailData = {
-      ...rachat,
-      adminToken: rachat.adminToken!,
-      etatEchappement: rachat.etatEchappement as string,
-    };
-
-    if (bordereauBuffer) {
-      await sendClientValidationEmail(emailData, bordereauBuffer).catch((e) =>
-        console.error("[VALIDER] Email error:", e)
-      );
-    }
-
-    return new NextResponse(
-      htmlSuccess(
-        `Dossier validé !`,
-        `${rachat.prenomVendeur} ${rachat.nomVendeur} — Réf. ${rachat.reference}<br/>${bordereauBuffer ? "Bordereau envoyé par email au client." : "<strong style='color:#f59e0b'>⚠️ Bordereau non généré — service d'expédition non configuré.</strong>"}`
-      ),
-      { status: 200, headers: { "Content-Type": "text/html" } }
-    );
+    if (!rachat || rachat.adminToken !== token)
+      return new NextResponse(htmlError("Lien invalide ou expire."), { status: 400, headers: { "Content-Type": "text/html" } });
+    if (rachat.statut === "VALIDE")
+      return new NextResponse(htmlInfo("Ce dossier a deja ete valide."), { status: 200, headers: { "Content-Type": "text/html" } });
+    if (rachat.statut === "REFUSE")
+      return new NextResponse(htmlError("Ce dossier a deja ete refuse."), { status: 400, headers: { "Content-Type": "text/html" } });
+    await prisma.rachat.update({ where: { id }, data: { statut: "VALIDE" } });
+    const emailData: RachatEmailData = { ...rachat, adminToken: rachat.adminToken!, etatEchappement: rachat.etatEchappement as string };
+    await sendClientValidationEmail(emailData).catch((e) => console.error("[VALIDER] Email error:", e));
+    const msg = `${rachat.prenomVendeur} ${rachat.nomVendeur} — Ref. ${rachat.reference} — Email de confirmation envoye.`;
+    return new NextResponse(htmlSuccess("Dossier valide !", msg), { status: 200, headers: { "Content-Type": "text/html" } });
   } catch (err) {
     console.error("[VALIDER]", err);
-    return new NextResponse(htmlError("Erreur serveur. Veuillez réessayer."), {
-      status: 500,
-      headers: { "Content-Type": "text/html" },
-    });
+    return new NextResponse(htmlError("Erreur serveur."), { status: 500, headers: { "Content-Type": "text/html" } });
   }
 }
 
-// ─── HTML helpers ─────────────────────────────────────────────────────────────
-
-function page(icon: string, title: string, content: string, color: string) {
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><title>${title}</title>
-  <style>*{box-sizing:border-box}body{margin:0;background:#0d0d0d;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh}
-  .card{background:#161616;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:48px;max-width:480px;text-align:center}
-  h1{color:#fff;font-size:22px;font-weight:900;margin:0 0 12px}p{color:#aaa;font-size:14px;line-height:1.7;margin:0 0 24px}
-  a{display:inline-block;background:${color};color:#fff;font-weight:700;padding:12px 24px;border-radius:10px;text-decoration:none;font-size:14px}</style>
-  </head><body><div class="card">
-  <div style="font-size:48px;margin-bottom:16px">${icon}</div>
-  <h1>${title}</h1><p>${content}</p>
-  <a href="${process.env.NEXTAUTH_URL ?? ""}/rachats">Voir le dashboard</a>
-  </div></body></html>`;
+function page(icon: string, title: string, body: string, color: string) {
+  const url = (process.env.NEXTAUTH_URL ?? "") + "/rachats";
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
+  <style>body{margin:0;background:#0d0d0d;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh}
+  .card{background:#161616;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:48px;max-width:480px;text-align:center}
+  h1{color:#fff;font-size:22px;margin:0 0 12px}p{color:#aaa;font-size:14px;line-height:1.7;margin:0 0 24px}
+  a{display:inline-block;background:${color};color:#fff;font-weight:700;padding:12px 24px;border-radius:10px;text-decoration:none}</style>
+  </head><body><div class="card"><h1>${title}</h1><p>${body}</p>
+  <a href="${url}">Voir le dashboard</a></div></body></html>`;
 }
 
-function htmlSuccess(title: string, content: string) {
-  return page("✅", title, content, "#22c55e");
-}
-function htmlError(msg: string) {
-  return page("❌", "Erreur", msg, "#ef4444");
-}
-function htmlInfo(msg: string) {
-  return page("ℹ️", "Déjà traité", msg, "#6366f1");
-}
+function htmlSuccess(t: string, c: string) { return page("ok", t, c, "#22c55e"); }
+function htmlError(m: string) { return page("err", "Erreur", m, "#ef4444"); }
+function htmlInfo(m: string) { return page("info", "Deja traite", m, "#6366f1"); }

@@ -31,7 +31,7 @@ export function generateNumeroAttestation(): string {
 export function getStatutLabel(statut: string): string {
   const labels: Record<string, string> = {
     EN_ATTENTE:    "En attente",
-    VALIDE:        "Validé — Bordereau envoyé",
+    VALIDE:        "Validé — En attente d'expédition",
     EN_COURS:      "En cours d'analyse",
     OFFRE_ENVOYEE: "Offre envoyée",
     ACCEPTE:       "Accepté",

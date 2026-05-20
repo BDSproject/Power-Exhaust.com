@@ -372,6 +372,27 @@ function Step3({ selectedEtat, register, handleSubmit, onSubmit, watch, isSubmit
   );
 }
 
+// ─── Liste statique de toutes les marques d'échappement (fallback) ───────────
+const EXHAUST_BRANDS_FALLBACK: { id: string; name: string }[] = [
+  { id: "akrapovic", name: "Akrapovic" },
+  { id: "arrow", name: "Arrow" },
+  { id: "austin-racing", name: "Austin Racing" },
+  { id: "dominator", name: "Dominator" },
+  { id: "fmf", name: "FMF Racing" },
+  { id: "gpr", name: "GPR" },
+  { id: "hgs", name: "HGS" },
+  { id: "leovince", name: "Leovince" },
+  { id: "mivv", name: "Mivv" },
+  { id: "oem", name: "Ligne d'Origine (OEM)" },
+  { id: "remus", name: "Remus" },
+  { id: "sc-project", name: "SC-Project" },
+  { id: "termignoni", name: "Termignoni" },
+  { id: "two-brothers", name: "Two Brothers Racing" },
+  { id: "vance-hines", name: "Vance & Hines" },
+  { id: "yoshimura", name: "Yoshimura" },
+  { id: "autre", name: "Autre" },
+];
+
 // ─── Wizard principal ─────────────────────────────────────────────────────────
 export function RachatWizard() {
   const t = useTranslations("wizard");
@@ -488,7 +509,7 @@ export function RachatWizard() {
   };
 
   const goToStep3 = async () => {
-    const ok = await trigger(["nomVendeur", "prenomVendeur", "emailVendeur", "marque", "modele"]);
+    const ok = await trigger(["nomVendeur", "prenomVendeur", "emailVendeur", "marque", "modele", "marqueEchappement"]);
     if (!ok) return;
     setError(null);
     setStep(3);
@@ -727,24 +748,30 @@ export function RachatWizard() {
               <div className="flex items-center gap-2 mb-5">
                 <span className="text-exhaust-orange text-base leading-none">🔧</span>
                 <h3 className="font-bold text-white">Ligne d&apos;échappement</h3>
-                <span className="ml-auto text-xs text-gray-600 bg-white/5 px-2 py-0.5 rounded-full">Optionnel</span>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-gray-400 block mb-1.5">Marque</label>
+                  <label className="text-xs font-semibold text-gray-400 block mb-1.5">
+                    Marque <span className="text-exhaust-orange">*</span>
+                  </label>
                   <select
-                    className="w-full px-3 py-2.5 rounded-xl border border-white/15 bg-white/6 text-white text-sm focus:outline-none focus:ring-2 focus:ring-exhaust-orange transition-all"
+                    className={`w-full px-3 py-2.5 rounded-xl border bg-white/6 text-white text-sm focus:outline-none focus:ring-2 focus:ring-exhaust-orange transition-all ${errors.marqueEchappement ? "border-red-500" : "border-white/15"}`}
                     value={watch("marqueEchappement") ?? ""}
                     onChange={(e) => {
                       const selected = brands.find((b) => b.name === e.target.value);
                       setExhaustBrandId(selected?.id ?? "");
-                      setValue("marqueEchappement", e.target.value);
+                      setValue("marqueEchappement", e.target.value, { shouldValidate: true });
                       setValue("modeleEchappement", "");
                     }}
                   >
                     <option value="">Choisir une marque</option>
-                    {brands.map((b) => <option key={b.id} value={b.name}>{b.name}</option>)}
+                    {(brands.length > 0 ? brands : EXHAUST_BRANDS_FALLBACK).map((b) => (
+                      <option key={b.id ?? b.name} value={b.name}>{b.name}</option>
+                    ))}
                   </select>
+                  {errors.marqueEchappement && (
+                    <p className="text-red-400 text-xs mt-1">{errors.marqueEchappement.message}</p>
+                  )}
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-gray-400 block mb-1.5">Modèle</label>

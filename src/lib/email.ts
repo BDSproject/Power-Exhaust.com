@@ -211,7 +211,7 @@ export async function sendAdminDossierEmail(rachat: RachatEmailData): Promise<vo
     <table cellpadding="0" cellspacing="0" width="100%">
       <tr>
         <td align="center" style="padding-right:8px;">
-          <a href="${validerUrl}" style="display:inline-block;background:#22c55e;color:#fff;font-weight:900;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;letter-spacing:0.3px;">✅ Valider &amp; envoyer bordereau</a>
+          <a href="${validerUrl}" style="display:inline-block;background:#22c55e;color:#fff;font-weight:900;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;letter-spacing:0.3px;">✅ Valider la demande</a>
         </td>
         <td align="center" style="padding-left:8px;">
           <a href="${refuserUrl}" style="display:inline-block;background:#ef4444;color:#fff;font-weight:900;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;letter-spacing:0.3px;">❌ Refuser la demande</a>
@@ -287,7 +287,6 @@ export async function sendClientConfirmationEmail(rachat: RachatEmailData): Prom
     <div style="background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.2);border-radius:12px;padding:16px;margin-bottom:24px;">
       <p style="margin:0;font-size:13px;color:#d4a017;line-height:1.6;">
         ⚠️ <strong>Important :</strong> En cas d'annulation ou de refus par nos équipes, le document signé sera invalidé et n'aura aucune valeur juridique.
-        Le bordereau d'expédition vous sera envoyé <strong>uniquement après validation</strong> de votre dossier par notre équipe.
       </p>
     </div>
 
@@ -295,7 +294,7 @@ export async function sendClientConfirmationEmail(rachat: RachatEmailData): Prom
       <p style="margin:0 0 14px;font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.5px;">Prochaines étapes</p>
       ${[
         { n:"1", txt:"Notre équipe analyse votre dossier (photos, état déclaré, signature)." },
-        { n:"2", txt:"Si votre demande est validée, vous recevrez par email votre bordereau d'expédition Colissimo." },
+        { n:"2", txt:"Si votre demande est validée, vous recevrez un email de confirmation." },
         { n:"3", txt:"Après réception et contrôle de la pièce, le virement est effectué sous 48h." },
       ].map(s => `
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
@@ -338,20 +337,19 @@ export async function sendClientConfirmationEmail(rachat: RachatEmailData): Prom
   });
 }
 
-// ─── 3. Email Client — dossier validé + bordereau ─────────────────────────────
+// ─── 3. Email Client — dossier validé ─────────────────────────────────────────
 
 export async function sendClientValidationEmail(
-  rachat: RachatEmailData,
-  bordereauBuffer: ArrayBuffer
+  rachat: RachatEmailData
 ): Promise<void> {
   const body = `
     <h2 style="margin:0 0 4px;font-size:22px;font-weight:900;color:#fff;">Dossier validé ! 🚀</h2>
-    <p style="margin:0 0 28px;color:#888;font-size:15px;">Votre bordereau d'expédition est prêt.</p>
+    <p style="margin:0 0 28px;color:#888;font-size:15px;">Votre demande de rachat a été acceptée.</p>
 
     <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:20px;margin-bottom:24px;">
       <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#22c55e;">✅ Votre demande a été validée</p>
       <p style="margin:0;color:#aaa;font-size:13px;line-height:1.6;">
-        Votre bordereau Colissimo est joint à cet email (fichier PDF). Imprimez-le et collez-le sur votre colis avant de le déposer dans un bureau de La Poste.
+        Notre équipe va prendre contact avec vous prochainement pour organiser l'expédition de votre pièce.
       </p>
     </div>
 
@@ -360,21 +358,6 @@ export async function sendClientValidationEmail(
       <p style="margin:0 0 4px;color:#ccc;font-size:14px;">📦 ${rachat.typeEchappement} — ${etatLabel(rachat.etatEchappement)}</p>
       <p style="margin:0 0 4px;color:#ccc;font-size:14px;">🏍️ ${rachat.marque} ${rachat.modele}</p>
       <p style="margin:4px 0 0;font-family:monospace;color:#ff6b00;font-size:13px;">Réf. ${rachat.reference}</p>
-    </div>
-
-    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;margin-bottom:24px;">
-      <p style="margin:0 0 14px;font-size:13px;font-weight:700;color:#fff;">Instructions d'expédition</p>
-      ${[
-        { n:"1", txt:"<strong>Ouvrez le fichier PDF</strong> joint à cet email et imprimez-le." },
-        { n:"2", txt:"<strong>Collez l'étiquette</strong> bien visible sur votre colis soigneusement emballé." },
-        { n:"3", txt:"<strong>Déposez le colis</strong> dans n'importe quel bureau de La Poste. L'envoi est entièrement à notre charge." },
-        { n:"4", txt:"<strong>Paiement sous 48h</strong> après réception et vérification de la pièce." },
-      ].map(s => `
-        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
-          <span style="min-width:24px;height:24px;background:#ff6b00;color:#fff;font-weight:700;font-size:12px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">${s.n}</span>
-          <p style="margin:0;color:#aaa;font-size:13px;line-height:1.5;">${s.txt}</p>
-        </div>
-      `).join("")}
     </div>
 
     <p style="margin:0;text-align:center;color:#555;font-size:13px;">
@@ -386,15 +369,8 @@ export async function sendClientValidationEmail(
   await transporter.sendMail({
     from:    FROM,
     to:      rachat.emailVendeur,
-    subject: `[Power Exhaust] Dossier validé — Votre bordereau d'expédition · Réf. ${rachat.reference}`,
+    subject: `[Power Exhaust] Dossier validé · Réf. ${rachat.reference}`,
     html:    emailWrapper("Dossier validé", body),
-    attachments: [
-      {
-        filename:    `bordereau-${rachat.reference}.pdf`,
-        content:     Buffer.from(bordereauBuffer),
-        contentType: "application/pdf",
-      },
-    ],
   });
 }
 
@@ -453,11 +429,11 @@ const STATUT_EMAIL_CONFIG: Record<string, {
   showSuivi: boolean;
 }> = {
   VALIDE: {
-    subject: "Dossier validé — bordereau en préparation",
+    subject: "Dossier validé — en attente d'expédition",
     emoji: "✅", title: "Dossier validé !",
     subtitle: "Votre dossier a été accepté par notre équipe.",
     color: "#22c55e", bgColor: "rgba(34,197,94,0.08)",
-    message: "Notre équipe a examiné votre demande. Votre dossier est désormais validé. Vous allez recevoir prochainement votre bordereau d'expédition Colissimo par email.",
+    message: "Notre équipe a examiné votre demande. Votre dossier est désormais validé. Nous allons vous contacter pour organiser l'expédition.",
     showSuivi: true,
   },
   EN_COURS: {
@@ -481,15 +457,15 @@ const STATUT_EMAIL_CONFIG: Record<string, {
     emoji: "🤝", title: "Offre acceptée !",
     subtitle: "Merci d'avoir accepté notre proposition.",
     color: "#38bdf8", bgColor: "rgba(56,189,248,0.08)",
-    message: "Votre acceptation a bien été enregistrée. Préparez votre colis soigneusement. Votre bordereau d'expédition vous sera transmis très prochainement.",
+    message: "Votre acceptation a bien été enregistrée. Préparez votre colis soigneusement. Notre équipe vous contactera très prochainement.",
     showSuivi: true,
   },
   EN_EXPEDITION: {
-    subject: "Votre bordereau d'expédition est prêt",
+    subject: "Expédition en cours",
     emoji: "📦", title: "Envoi en cours",
-    subtitle: "Votre bordereau d'expédition est disponible.",
+    subtitle: "Préparez votre colis.",
     color: "#6366f1", bgColor: "rgba(99,102,241,0.08)",
-    message: "Votre bordereau Colissimo est joint à cet email ou disponible dans votre espace. Imprimez-le, fixez-le sur votre colis et déposez-le dans un bureau de La Poste.",
+    message: "Votre dossier est en cours de traitement. Préparez votre colis soigneusement et attendez les instructions d'expédition de notre équipe.",
     showSuivi: true,
   },
   RECU: {

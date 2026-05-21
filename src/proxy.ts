@@ -21,7 +21,18 @@ export default async function proxy(req: NextRequest) {
   const isAdmin = /\/admin/.test(pathname);
 
   if (isAuthPage || isDashboard || isAdmin) {
-    const token = await getToken({ req, secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET });
+    // NextAuth v5 utilise "__Secure-authjs.session-token" (HTTPS) ou "authjs.session-token" (HTTP)
+    const token =
+      (await getToken({
+        req,
+        secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+        cookieName: "__Secure-authjs.session-token",
+      })) ??
+      (await getToken({
+        req,
+        secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+        cookieName: "authjs.session-token",
+      }));
 
     if (token && isAuthPage) {
       return NextResponse.redirect(new URL("/dashboard", req.url));

@@ -123,6 +123,8 @@ CREATE TABLE "rachats" (
     "immatriculation" TEXT,
     "kilometrage" INTEGER,
     "typeEchappement" TEXT,
+    "marqueEchappement" TEXT,
+    "modeleEchappement" TEXT,
     "etatEchappement" "EtatEchappement" NOT NULL,
     "description" TEXT,
     "photos" TEXT,

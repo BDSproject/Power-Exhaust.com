@@ -145,6 +145,8 @@ model Rachat {
   immatriculation String?
   kilometrage     Int?
   typeEchappement String?
+  marqueEchappement String?  // marque de la ligne d'échappement
+  modeleEchappement String?  // modèle de la ligne d'échappement
   etatEchappement EtatEchappement
   description     String?
   photos          String?

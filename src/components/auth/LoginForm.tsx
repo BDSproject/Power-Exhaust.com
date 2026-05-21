@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { loginSchema, type LoginFormData } from "@/lib/validations";
 import { Input, Button, Alert } from "@/components/ui";
 
@@ -61,15 +60,6 @@ export function LoginForm() {
         error={errors.password?.message}
         {...register("password")}
       />
-
-      <div className="flex items-center justify-end">
-        <Link
-          href="/mot-de-passe-oublie"
-          className="text-sm text-bmw-blue hover:text-bmw-blue-dark font-medium"
-        >
-          Mot de passe oublié ?
-        </Link>
-      </div>
 
       <Button
         type="submit"

@@ -21,7 +21,7 @@ export default async function proxy(req: NextRequest) {
   const isAdmin = /\/admin/.test(pathname);
 
   if (isAuthPage || isDashboard || isAdmin) {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ req, secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET });
 
     if (token && isAuthPage) {
       return NextResponse.redirect(new URL("/dashboard", req.url));

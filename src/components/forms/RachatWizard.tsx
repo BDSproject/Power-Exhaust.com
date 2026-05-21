@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { rachatPublicSchema, type RachatPublicFormData } from "@/lib/validations";
@@ -8,9 +8,10 @@ import { MOTO_MODELS } from "@/data/moto-models";
 import { Input, Button, Alert } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import {
-  Check, ChevronLeft, ChevronRight, Tag, User,
+  Check, ChevronLeft, ChevronRight, ChevronDown, Tag, User,
   CheckCircle2, Camera, X, MessageSquare, PenLine, AlertTriangle,
   Zap, Package, MapPin, Truck, Clock, Banknote, Lock, Shield,
+  ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ScanSearch, FileText,
 } from "lucide-react";
 import { SignaturePad } from "@/components/forms/SignaturePad";
 
@@ -36,7 +37,7 @@ function PhotoSlot({
 }: {
   index: number;
   preview: string | null;
-  angle: { label: string; icon: string };
+  angle: { label: string; icon: React.ElementType };
   onFile: (file: File, index: number) => void;
   onRemove: (index: number) => void;
 }) {
@@ -66,7 +67,7 @@ function PhotoSlot({
           onClick={() => ref.current?.click()}
           className="w-full aspect-square rounded-2xl border-2 border-dashed border-white/15 hover:border-exhaust-orange/60 hover:bg-exhaust-orange/5 flex flex-col items-center justify-center gap-2 transition-all group"
         >
-          <span className="text-xl">{angle.icon}</span>
+          <angle.icon className="w-5 h-5 text-gray-500 group-hover:text-exhaust-orange transition-colors" />
           <Camera className="w-4 h-4 text-gray-600 group-hover:text-exhaust-orange transition-colors" />
           <p className="text-[10px] text-gray-600 group-hover:text-gray-300 text-center px-1 leading-tight">{angle.label}</p>
         </button>
@@ -372,6 +373,114 @@ function Step3({ selectedEtat, register, handleSubmit, onSubmit, watch, isSubmit
   );
 }
 
+// ─── Aperçu HTML du contrat de cession ──────────────────────────────────────
+function ContratPreview({ data, etat }: {
+  data: Partial<RachatPublicFormData>;
+  etat: string | null;
+}) {
+  const ETAT_LABELS: Record<string, string> = {
+    EXCELLENT: "Excellent", BON: "Bon état", MOYEN: "État moyen", MAUVAIS: "Mauvais état",
+  };
+  const today = new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+  return (
+    <div className="bg-white rounded-xl text-gray-900 text-[11px] leading-relaxed overflow-hidden shadow-xl">
+      {/* En-tête */}
+      <div className="bg-[#1C69D4] px-6 py-4 flex items-start justify-between">
+        <div>
+          <p className="text-white font-black text-lg tracking-widest">POWER EXHAUST</p>
+          <p className="text-blue-200 text-[9px] tracking-wider mt-0.5">RACHAT DE LIGNES D'ÉCHAPPEMENT — TOUS MODÈLES</p>
+        </div>
+        <div className="text-right">
+          <p className="text-white font-bold text-base">ATTESTATION DE CESSION</p>
+          <p className="text-blue-200 text-[9px] mt-1">Date : {today}</p>
+        </div>
+      </div>
+      {/* Corps */}
+      <div className="px-6 py-5 space-y-5">
+        {/* Parties */}
+        <div>
+          <p className="text-[9px] font-black uppercase tracking-widest text-[#1C69D4] border-b border-[#1C69D4] pb-1 mb-3">Parties</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider mb-1">Le Vendeur</p>
+              <p className="font-bold">{data.prenomVendeur || "—"} {data.nomVendeur || ""}</p>
+              <p className="text-gray-500 text-[9px] mt-0.5">{data.emailVendeur || ""}</p>
+              <p className="text-gray-500 text-[9px]">{data.telVendeur || ""}</p>
+              <p className="text-gray-500 text-[9px] mt-1">{data.adresseVendeur || ""}</p>
+              <p className="text-gray-500 text-[9px]">{data.codePostalVendeur || ""} {data.villeVendeur || ""}</p>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider mb-1">{"L'Acheteur"}</p>
+              <p className="font-bold">POWER EXHAUST</p>
+              <p className="text-gray-500 text-[9px] mt-0.5">contact@power-exhaust.com</p>
+              <p className="text-gray-500 text-[9px] mt-1">France</p>
+            </div>
+          </div>
+        </div>
+        {/* Désignation */}
+        <div>
+          <p className="text-[9px] font-black uppercase tracking-widest text-[#1C69D4] border-b border-[#1C69D4] pb-1 mb-3">Désignation de la pièce cédée</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider mb-1">Marque du véhicule</p>
+              <p className="font-bold">{data.marque || "—"}</p>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider mb-1">Modèle</p>
+              <p className="font-bold">{data.modele || "—"}</p>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider mb-1">Marque échappement</p>
+              <p className="font-bold">{data.marqueEchappement || "—"}</p>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider mb-1">État</p>
+              <p className="font-bold">{etat ? (ETAT_LABELS[etat] ?? etat) : "—"}</p>
+            </div>
+          </div>
+          {data.modeleEchappement && (
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100 mt-3">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider mb-1">Modèle échappement</p>
+              <p className="font-bold">{data.modeleEchappement}</p>
+            </div>
+          )}
+          {data.description && (
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-100 mt-3">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider mb-1">Description complémentaire</p>
+              <p className="text-gray-700">{data.description}</p>
+            </div>
+          )}
+        </div>
+        {/* Clause légale */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <p className="text-[8.5px] text-amber-800 leading-relaxed">
+            Le vendeur déclare être l&apos;unique propriétaire de la pièce décrite ci-dessus, libre de tout gage, nantissement ou opposition, et certifie l&apos;exactitude des informations fournies. La présente attestation vaut contrat de cession entre les parties. Conformément au Code Civil, la propriété est transférée dès la signature des deux parties.
+          </p>
+        </div>
+        {/* Zone signature */}
+        <div>
+          <p className="text-[9px] font-black uppercase tracking-widest text-[#1C69D4] border-b border-[#1C69D4] pb-1 mb-3">Signatures des parties</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 min-h-[80px] flex flex-col items-center justify-center">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider text-center mb-2">Signature du vendeur<br/>{data.prenomVendeur || ""} {data.nomVendeur || ""}</p>
+              <p className="text-[8px] text-gray-400 italic">À signer ci-dessous</p>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-3 min-h-[80px] flex flex-col items-center justify-center bg-gray-50">
+              <p className="text-[8px] font-black uppercase text-gray-500 tracking-wider text-center mb-2">{"Signature de l'acheteur"}<br/>Power Exhaust</p>
+              <p className="text-[8px] text-gray-400 italic">Signature à réception</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Pied de page */}
+      <div className="border-t border-gray-200 px-6 py-2 flex justify-between items-center bg-gray-50">
+        <p className="text-[7.5px] font-bold text-[#1C69D4]">POWER EXHAUST</p>
+        <p className="text-[7.5px] text-gray-400">Document généré le {today} — power-exhaust.com</p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Liste statique de toutes les marques d'échappement (fallback) ───────────
 const EXHAUST_BRANDS_FALLBACK: { id: string; name: string }[] = [
   { id: "akrapovic", name: "Akrapovic" },
@@ -428,11 +537,11 @@ export function RachatWizard() {
   ];
 
   const PHOTO_ANGLES = [
-    { label: t("photo_top"),    icon: "⬆️" },
-    { label: t("photo_front"),  icon: "🔳" },
-    { label: t("photo_back"),   icon: "🔲" },
-    { label: t("photo_sides"),  icon: "↔️" },
-    { label: t("photo_detail"), icon: "🔍" },
+    { label: t("photo_front"),  icon: ArrowUp },
+    { label: t("photo_back"),   icon: ArrowDown },
+    { label: t("photo_left"),   icon: ArrowLeft },
+    { label: t("photo_right"),  icon: ArrowRight },
+    { label: t("photo_detail"), icon: ScanSearch },
   ];
 
   const STEPS = [
@@ -456,6 +565,7 @@ export function RachatWizard() {
   const [, setRachatId] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [signatureError, setSignatureError] = useState<string | null>(null);
+  const [showDoc, setShowDoc] = useState(false);
   const [ribFile, setRibFile] = useState<File | null>(null);
   const [ribPreview, setRibPreview] = useState<string | null>(null);
   const [ribDataUrl, setRibDataUrl] = useState<string | null>(null);
@@ -746,7 +856,12 @@ export function RachatWizard() {
             {/* Ligne d'échappement */}
             <div className="bg-white/3 border border-white/10 rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-5">
-                <span className="text-exhaust-orange text-base leading-none">🔧</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-exhaust-orange flex-shrink-0">
+                  <path d="M3 12h4l2-4h6l2 4h4" />
+                  <path d="M17 12c0 2.5 2 3 2 5" />
+                  <circle cx="19" cy="18" r="1" />
+                  <path d="M3 12c0 0 0-3 3-3h2" />
+                </svg>
                 <h3 className="font-bold text-white">Ligne d&apos;échappement</h3>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -919,7 +1034,27 @@ export function RachatWizard() {
             <PenLine className="w-4 h-4 text-exhaust-orange" />
             <h2 className="text-xl font-black text-white">{t("signature_title")}</h2>
           </div>
-          <p className="text-gray-500 text-sm mb-8 ml-6">{t("signature_desc")}</p>
+          <p className="text-gray-500 text-sm mb-6 ml-6">{t("signature_desc")}</p>
+
+          {/* Aperçu du document */}
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={() => setShowDoc((v) => !v)}
+              className="w-full flex items-center justify-between px-5 py-3.5 rounded-2xl border border-white/15 bg-white/4 hover:bg-white/7 transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <FileText className="w-4 h-4 text-exhaust-orange" />
+                <span className="text-sm font-semibold text-white">Lire le document à signer</span>
+              </div>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${showDoc ? "rotate-180" : ""}`} />
+            </button>
+            {showDoc && (
+              <div className="mt-3 rounded-2xl overflow-hidden border border-white/10">
+                <ContratPreview data={watch()} etat={selectedEtat} />
+              </div>
+            )}
+          </div>
 
           <div className="bg-amber-500/8 border border-amber-500/25 rounded-2xl p-5 mb-6">
             <div className="flex items-start gap-3">

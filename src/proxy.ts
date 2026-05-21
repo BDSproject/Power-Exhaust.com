@@ -37,8 +37,8 @@ export default async function proxy(req: NextRequest) {
     }
   }
 
-  // Skip i18n for back-office / auth routes
-  const isBackOffice = /^\/(dashboard|admin|rachats|attestations|login|identite|suivi)(\/|$)/.test(pathname);
+  // Skip i18n for back-office / auth routes (suivi & identite sont des pages publiques i18n, pas listées ici)
+  const isBackOffice = /^\/(dashboard|admin|rachats|attestations|login)(\/|$)/.test(pathname);
   if (isBackOffice) {
     return NextResponse.next();
   }

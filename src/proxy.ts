@@ -1,38 +1,40 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
-import { auth } from "@/lib/auth";
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // i18n middleware
 const intlMiddleware = createMiddleware(routing);
 
-// Auth check wrapper
-export default auth((req: NextRequest & { auth: { user?: { role?: string } } | null }) => {
+export default async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const session = req.auth;
 
   // Skip i18n for API routes
   if (pathname.startsWith("/api/")) {
     return NextResponse.next();
   }
 
-  // Auth redirects
+  // Auth redirects — utilise JWT uniquement (compatible Edge Runtime, pas de Prisma/pg)
   const isAuthPage = /\/login$/.test(pathname);
   const isDashboard = /\/(dashboard|rachats|attestations)/.test(pathname);
   const isAdmin = /\/admin/.test(pathname);
 
-  if (session && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
-  }
-  if (!session && isDashboard) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-  if (!session && isAdmin) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-  if (isAdmin && session?.user?.role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  if (isAuthPage || isDashboard || isAdmin) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (token && isAuthPage) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    if (!token && isDashboard) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+    if (!token && isAdmin) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+    if (isAdmin && token?.role !== "ADMIN") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
   }
 
   // Skip i18n for back-office / auth routes
@@ -41,9 +43,9 @@ export default auth((req: NextRequest & { auth: { user?: { role?: string } } | n
     return NextResponse.next();
   }
 
-  // Apply i18n middleware for all public routes (including /en, /de/rachat, etc.)
-  return intlMiddleware(req as NextRequest);
-});
+  // Apply i18n middleware for all public routes
+  return intlMiddleware(req);
+}
 
 export const config = {
   matcher: [

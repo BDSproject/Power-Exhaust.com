@@ -1,7 +1,7 @@
 /**
- * API — Accès aux fichiers chiffrés de pièce d'identité
+ * API — Accès aux fichiers chiffrés de pièce d'identité et RIB
  * GET /api/identite/[rachatId]/fichier/[type]  → stream déchiffré (admin only)
- * [type] = "recto" | "verso"
+ * [type] = "recto" | "verso" | "rib"
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -24,7 +24,7 @@ export async function GET(
 
     const { rachatId, type } = await params;
 
-    if (type !== "recto" && type !== "verso") {
+    if (!["recto", "verso", "rib"].includes(type)) {
       return NextResponse.json({ message: "Type invalide" }, { status: 400 });
     }
 
@@ -43,6 +43,37 @@ export async function GET(
       },
     });
 
+    // Cas RIB
+    if (type === "rib") {
+      const rib = await prisma.ribDocument.findUnique({
+        where: { rachatId },
+        select: {
+          fichierUuid: true,
+          fichierMime: true,
+          fichierIv: true,
+          fichierTag: true,
+        },
+      });
+
+      if (!rib) {
+        return NextResponse.json({ message: "RIB non trouvé" }, { status: 404 });
+      }
+
+      const buffer = await readEncryptedFile(rib.fichierUuid, rib.fichierIv, rib.fichierTag);
+
+      return new NextResponse(buffer as unknown as BodyInit, {
+        status: 200,
+        headers: {
+          "Content-Type": rib.fichierMime ?? "application/octet-stream",
+          "Content-Disposition": `inline; filename="rib-${rachatId}.${rib.fichierMime?.split("/")[1] ?? "bin"}"`,
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+          "X-Content-Type-Options": "nosniff",
+          "X-Robots-Tag": "noindex, nofollow",
+        },
+      });
+    }
+
+    // Cas identité (recto/verso)
     if (!doc) {
       return NextResponse.json({ message: "Document non trouvé" }, { status: 404 });
     }

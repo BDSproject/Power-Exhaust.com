@@ -13,6 +13,8 @@ import {
   ChevronDown,
   Search,
   Filter,
+  Archive,
+  Trash2,
 } from "lucide-react";
 
 const STATUTS = [
@@ -117,6 +119,27 @@ export default function AdminRachatsPage() {
       // eslint-disable-next-line react-hooks/immutability
       window.location.href = `/attestations/${att.id}`;
     }
+  };
+
+  const archiveRachat = async (id: string) => {
+    if (!confirm("Êtes-vous sûr de vouloir archiver ce rachat ? Cette action ne peut pas être annulée.")) return;
+    setUpdating(id);
+    await fetch(`/api/rachat/${id}/delete?action=archive`, {
+      method: "DELETE",
+    });
+    await fetchRachats();
+    setUpdating(null);
+  };
+
+  const deleteRachat = async (id: string) => {
+    if (!confirm("⚠️ ATTENTION : Vous êtes sur le point de SUPPRIMER définitivement ce rachat. Cette action ne peut PAS être annulée. Êtes-vous sûr ?")) return;
+    if (!confirm("Dernière confirmation : SUPPRIMER DÉFINITIVEMENT ce rachat ?")) return;
+    setUpdating(id);
+    await fetch(`/api/rachat/${id}/delete?action=delete`, {
+      method: "DELETE",
+    });
+    await fetchRachats();
+    setUpdating(null);
   };
 
   const filtered = rachats.filter((r) => {
@@ -381,6 +404,38 @@ export default function AdminRachatsPage() {
                           Dossier
                         </button>
                       </Link>
+
+                      {/* Archiver */}
+                      <button
+                        onClick={() => archiveRachat(r.id)}
+                        disabled={isUpdating}
+                        className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-amber-400 hover:text-white transition-colors disabled:opacity-50"
+                        style={{ background: "rgba(180,83,9,0.15)", border: "1px solid rgba(180,83,9,0.3)" }}
+                        title="Archiver ce rachat"
+                      >
+                        {isUpdating ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Archive className="w-3.5 h-3.5" />
+                        )}
+                        Archiver
+                      </button>
+
+                      {/* Supprimer */}
+                      <button
+                        onClick={() => deleteRachat(r.id)}
+                        disabled={isUpdating}
+                        className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-red-400 hover:text-white transition-colors disabled:opacity-50"
+                        style={{ background: "rgba(220,38,38,0.15)", border: "1px solid rgba(220,38,38,0.3)" }}
+                        title="Supprimer définitivement ce rachat"
+                      >
+                        {isUpdating ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-3.5 h-3.5" />
+                        )}
+                        Supprimer
+                      </button>
                     </div>
                   </div>
                 </div>

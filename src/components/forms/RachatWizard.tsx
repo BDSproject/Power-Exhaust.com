@@ -14,6 +14,7 @@ import {
   ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ScanSearch, FileText,
 } from "lucide-react";
 import { SignaturePad } from "@/components/forms/SignaturePad";
+import { IdentiteUploadStep } from "@/components/forms/IdentiteUploadStep";
 
 interface ExhaustBrand {
   id: string;
@@ -549,8 +550,9 @@ export function RachatWizard() {
     { n: 2, label: t("step2_label"), icon: User },
     { n: 3, label: t("step3_label"), icon: Package },
     { n: 4, label: t("step4_label"), icon: PenLine },
-    { n: 5, label: t("step5_label"), icon: Banknote },
-    { n: 6, label: t("step6_label"), icon: CheckCircle2 },
+    { n: 5, label: "Identité", icon: Shield },
+    { n: 6, label: t("step5_label"), icon: Banknote },
+    { n: 7, label: t("step6_label"), icon: CheckCircle2 },
   ];
 
   const [step, setStep] = useState(1);
@@ -655,11 +657,11 @@ export function RachatWizard() {
     reader.readAsDataURL(file);
   };
 
-  const goToStep6 = () => {
+  const goToStep7 = () => {
     if (!ribFile) { setRibError(t("error_add_rib")); return; }
     setRibError(null);
     setError(null);
-    setStep(6);
+    setStep(7);
   };
 
   const onSubmit = async (data: RachatPublicFormData) => {
@@ -1098,15 +1100,24 @@ export function RachatWizard() {
             size="lg"
             className="w-full bg-exhaust-orange hover:bg-exhaust-orange-dark font-black"
           >
-            {t("btn_confirm_signature")} <ChevronRight className="w-5 h-5" />
+            {t("btn_continue")} <ChevronRight className="w-5 h-5" />
           </Button>
         </div>
       )}
 
-      {/* ── ÉTAPE 5 — RIB ── */}
+      {/* ── ÉTAPE 5 — Identité ── */}
       {step === 5 && (
+        <IdentiteUploadStep
+          onBack={() => setStep(4)}
+          onContinue={() => setStep(6)}
+          t={t}
+        />
+      )}
+
+      {/* ── ÉTAPE 6 — RIB ── */}
+      {step === 6 && (
         <div>
-          <button type="button" onClick={() => setStep(4)} className="flex items-center gap-2 text-gray-400 hover:text-white mb-7 text-sm font-medium transition-colors">
+          <button type="button" onClick={() => setStep(5)} className="flex items-center gap-2 text-gray-400 hover:text-white mb-7 text-sm font-medium transition-colors">
             <ChevronLeft className="w-4 h-4" /> {t("back")}
           </button>
 
@@ -1192,7 +1203,7 @@ export function RachatWizard() {
 
           <Button
             type="button"
-            onClick={goToStep6}
+            onClick={goToStep7}
             size="lg"
             className="w-full bg-exhaust-orange hover:bg-exhaust-orange-dark font-black"
           >
@@ -1201,8 +1212,8 @@ export function RachatWizard() {
         </div>
       )}
 
-      {/* ── ÉTAPE 6 — Récapitulatif ── */}
-      {step === 6 && (
+      {/* ── ÉTAPE 7 — Récapitulatif ── */}
+      {step === 7 && (
         <Step3
           selectedEtat={selectedEtat}
           register={register}

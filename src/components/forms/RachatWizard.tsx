@@ -564,7 +564,7 @@ export function RachatWizard() {
   const [previews, setPreviews] = useState<(string | null)[]>([null, null, null, null, null]);
   const [submitted, setSubmitted] = useState(false);
   const [referenceId, setReferenceId] = useState<string | null>(null);
-  const [, setRachatId] = useState<string | null>(null);
+  const [rachatId, setRachatId] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [signatureError, setSignatureError] = useState<string | null>(null);
   const [showDoc, setShowDoc] = useState(false);
@@ -750,7 +750,7 @@ export function RachatWizard() {
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-left space-y-4">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-left space-y-4 mb-8">
           <h3 className="font-bold text-white text-sm uppercase tracking-wider mb-4">{t("next_steps_title")}</h3>
           {[
             { n: "1", color: "bg-amber-500",     text: t("next_step_1") },
@@ -763,7 +763,16 @@ export function RachatWizard() {
             </div>
           ))}
         </div>
-        <p className="text-gray-500 text-sm mt-8">
+
+        {/* Bouton pour voir la demande */}
+        <a 
+          href={`/rachats/${rachatId}`}
+          className="inline-block bg-exhaust-orange hover:bg-exhaust-orange-dark text-white font-bold py-3 px-8 rounded-xl transition-colors mb-6"
+        >
+          👁️ Voir ma demande →
+        </a>
+
+        <p className="text-gray-500 text-sm">
           {t("question")}{" "}
           <a href="mailto:contact@power-exhaust.com" className="text-exhaust-orange hover:underline">contact@power-exhaust.com</a>
         </p>

@@ -20,6 +20,7 @@ const navItems: { label: string; href: string; icon: LucideIcon }[] = [
 
 const adminItems: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Admin - Rachats", href: "/admin/rachats", icon: Settings },
+  { label: "Admin - Attestations", href: "/admin/attestations", icon: FileText },
   { label: "Admin - Utilisateurs", href: "/admin/utilisateurs", icon: Users },
   { label: "Catalogue & Prix", href: "/admin/catalogue", icon: Tag },
   { label: "Chat clients", href: "/admin/chat", icon: MessageCircle },

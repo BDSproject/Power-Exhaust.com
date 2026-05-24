@@ -309,6 +309,7 @@
     "next_step_3": "Après réception et contrôle, paiement par virement sous 48h.",
     "question": "Une question ?",
     "error_select_state": "Veuillez sélectionner un état",
+    "error_complete_required_fields": "Veuillez compléter tous les champs requis pour passer à l'étape suivante",
     "error_sign": "Veuillez signer le document avant de continuer.",
     "error_rib_format": "Format non autorisé (JPG, PNG, WEBP ou PDF)",
     "error_rib_size": "Fichier trop volumineux (max 10 Mo)",

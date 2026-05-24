@@ -309,6 +309,7 @@
     "next_step_3": "Nach Eingang und Kontrolle, Zahlung per Überweisung innerhalb von 48h.",
     "question": "Eine Frage?",
     "error_select_state": "Bitte wählen Sie einen Zustand",
+    "error_complete_required_fields": "Bitte füllen Sie alle erforderlichen Felder aus, um zum nächsten Schritt zu gelangen",
     "error_sign": "Bitte unterschreiben Sie das Dokument, bevor Sie fortfahren.",
     "error_rib_format": "Nicht unterstütztes Format (JPG, PNG, WEBP oder PDF)",
     "error_rib_size": "Datei zu groß (max 10 MB)",

@@ -309,6 +309,7 @@
     "next_step_3": "Após recebimento e controle, pagamento por transferência em 48h.",
     "question": "Uma dúvida?",
     "error_select_state": "Por favor selecione um estado",
+    "error_complete_required_fields": "Por favor preencha todos os campos obrigatórios para prosseguir para a próxima etapa",
     "error_sign": "Por favor assine o documento antes de continuar.",
     "error_rib_format": "Formato não suportado (JPG, PNG, WEBP ou PDF)",
     "error_rib_size": "Arquivo muito grande (máx 10 MB)",

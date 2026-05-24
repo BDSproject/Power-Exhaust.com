@@ -616,21 +616,30 @@ export function RachatWizard() {
   };
 
   const goToStep2 = () => {
-    if (!selectedEtat) { setError(t("error_select_state")); return; }
+    if (!selectedEtat) { 
+      setError(t("error_select_state")); 
+      return; 
+    }
     setError(null);
     setStep(2);
   };
 
   const goToStep3 = async () => {
     const ok = await trigger(["nomVendeur", "prenomVendeur", "emailVendeur", "marque", "modele", "marqueEchappement"]);
-    if (!ok) return;
+    if (!ok) { 
+      setError(t("error_complete_required_fields")); 
+      return;
+    }
     setError(null);
     setStep(3);
   };
 
   const goToStep4 = async () => {
     const ok = await trigger(["adresseVendeur", "villeVendeur", "codePostalVendeur", "poidsKg"]);
-    if (!ok) return;
+    if (!ok) { 
+      setError(t("error_complete_required_fields")); 
+      return;
+    }
     setError(null);
     setStep(4);
   };
@@ -668,6 +677,8 @@ export function RachatWizard() {
   const onSubmit = async (data: RachatPublicFormData) => {
     if (!signature) { setError(t("error_sign_required")); return; }
     setError(null);
+    setSignatureError(null);
+    setRibError(null);
     try {
       // Étape 1: Convertir les photos en base64
       console.log("[RACHAT_SUBMIT] Début conversion photos...");
@@ -730,6 +741,10 @@ export function RachatWizard() {
       }
 
       console.log("[RACHAT_SUBMIT] Succès complet");
+      // Clear ALL errors before showing success
+      setError(null);
+      setSignatureError(null);
+      setRibError(null);
       setReferenceId(json.reference);
       setRachatId(json.id ?? null);
       setSubmittedEmail(data.emailVendeur);

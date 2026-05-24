@@ -309,6 +309,7 @@
     "next_step_3": "Na ontvangst en controle, betaling per overboeking binnen 48u.",
     "question": "Een vraag?",
     "error_select_state": "Selecteer een staat",
+    "error_complete_required_fields": "Vul alle vereiste velden in om naar de volgende stap te gaan",
     "error_sign": "Onderteken het document voor u doorgaat.",
     "error_rib_format": "Niet ondersteund formaat (JPG, PNG, WEBP of PDF)",
     "error_rib_size": "Bestand te groot (max 10 MB)",

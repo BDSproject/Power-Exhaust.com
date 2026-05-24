@@ -309,6 +309,7 @@
     "next_step_3": "Po otrzymaniu i kontroli, płatność przelewem w ciągu 48h.",
     "question": "Pytanie?",
     "error_select_state": "Wybierz stan",
+    "error_complete_required_fields": "Wypełnij wszystkie wymagane pola, aby przejść do następnego kroku",
     "error_sign": "Podpisz dokument przed kontynuowaniem.",
     "error_rib_format": "Nieobsługiwany format (JPG, PNG, WEBP lub PDF)",
     "error_rib_size": "Plik zbyt duży (maks 10 MB)",

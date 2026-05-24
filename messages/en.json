@@ -309,6 +309,7 @@
     "next_step_3": "After receipt and inspection, payment by bank transfer within 48h.",
     "question": "A question?",
     "error_select_state": "Please select a condition",
+    "error_complete_required_fields": "Please complete all required fields to proceed to the next step",
     "error_sign": "Please sign the document before continuing.",
     "error_rib_format": "Unsupported format (JPG, PNG, WEBP or PDF)",
     "error_rib_size": "File too large (max 10 MB)",

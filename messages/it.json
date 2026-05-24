@@ -309,6 +309,7 @@
     "next_step_3": "Dopo la ricezione e il controllo, pagamento tramite bonifico entro 48h.",
     "question": "Una domanda?",
     "error_select_state": "Seleziona uno stato",
+    "error_complete_required_fields": "Completa tutti i campi obbligatori per procedere al passaggio successivo",
     "error_sign": "Firma il documento prima di continuare.",
     "error_rib_format": "Formato non supportato (JPG, PNG, WEBP o PDF)",
     "error_rib_size": "File troppo grande (max 10 MB)",

@@ -11,7 +11,7 @@ import {
   Check, ChevronLeft, ChevronRight, ChevronDown, Tag, User,
   CheckCircle2, Camera, X, MessageSquare, PenLine, AlertTriangle,
   Zap, Package, MapPin, Truck, Clock, Banknote, Lock, Shield,
-  ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ScanSearch, FileText,
+  ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ScanSearch, FileText, Mail,
 } from "lucide-react";
 import { SignaturePad } from "@/components/forms/SignaturePad";
 import { IdentiteUploadStep } from "@/components/forms/IdentiteUploadStep";
@@ -565,6 +565,7 @@ export function RachatWizard() {
   const [submitted, setSubmitted] = useState(false);
   const [referenceId, setReferenceId] = useState<string | null>(null);
   const [rachatId, setRachatId] = useState<string | null>(null);
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [signatureError, setSignatureError] = useState<string | null>(null);
   const [showDoc, setShowDoc] = useState(false);
@@ -714,6 +715,7 @@ export function RachatWizard() {
 
       setReferenceId(json.reference);
       setRachatId(json.id ?? null);
+      setSubmittedEmail(data.emailVendeur);
       setSubmitted(true);
     } catch {
       setError(t("error_network"));
@@ -742,6 +744,16 @@ export function RachatWizard() {
           <p className="text-sm text-gray-400 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: t("pending_desc") }}
           />
+        </div>
+
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-2xl px-6 py-5 mb-6 text-left">
+          <div className="flex items-center gap-2 mb-2">
+            <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" />
+            <p className="text-sm font-bold text-blue-400">Email de confirmation</p>
+          </div>
+          <p className="text-sm text-gray-400 leading-relaxed">
+            Un email de confirmation avec le récapitulatif complet de votre demande a été envoyé à <strong className="text-white">{submittedEmail}</strong>. Vérifiez votre dossier spam si vous ne le recevez pas.
+          </p>
         </div>
 
         <div className="bg-white/4 border border-white/10 rounded-2xl px-6 py-4 mb-8 text-left">

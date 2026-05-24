@@ -11,6 +11,7 @@ import prisma from "@/lib/db";
 import { saveEncryptedFile } from "@/lib/crypto-file";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60; // 60s pour les uploads volumineux
 
 const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 const MAX_SIZE = 10 * 1024 * 1024; // 10 Mo
@@ -42,7 +43,7 @@ export async function GET(
   return NextResponse.json(doc);
 }
 
-// ─── POST — Upload base64 (depuis le wizard) ─────────────────────────────────
+// ─── POST — Upload base64 ou FormData ──────────────────────────────────────
 
 export async function POST(
   req: NextRequest,
@@ -63,22 +64,51 @@ export async function POST(
       return NextResponse.json({ message: "RIB déjà enregistré" }, { status: 409 });
     }
 
-    const body = await req.json() as { dataUrl?: string; mime?: string };
-    const { dataUrl, mime } = body;
+    let buffer: Buffer;
+    let mime: string;
 
-    if (!dataUrl || !mime) {
-      return NextResponse.json({ message: "Données manquantes" }, { status: 400 });
-    }
-    if (!ALLOWED_MIME.includes(mime)) {
-      return NextResponse.json({ message: "Format non autorisé (JPG, PNG, WEBP ou PDF)" }, { status: 400 });
-    }
+    // Déterminer le type de contenu (FormData ou JSON base64)
+    const contentType = req.headers.get("content-type") ?? "";
 
-    // Décoder le base64
-    const base64Data = dataUrl.includes(",") ? dataUrl.split(",")[1] : dataUrl;
-    const buffer = Buffer.from(base64Data, "base64");
+    if (contentType.includes("multipart/form-data")) {
+      // ─ FormData (recommended) ─
+      const formData = await req.formData();
+      const file = formData.get("file") as File | null;
+      
+      if (!file) {
+        return NextResponse.json({ message: "Fichier manquant" }, { status: 400 });
+      }
 
-    if (buffer.byteLength > MAX_SIZE) {
-      return NextResponse.json({ message: "Fichier trop volumineux (max 10 Mo)" }, { status: 400 });
+      mime = file.type;
+      if (!ALLOWED_MIME.includes(mime)) {
+        return NextResponse.json({ message: "Format non autorisé (JPG, PNG, WEBP ou PDF)" }, { status: 400 });
+      }
+
+      buffer = Buffer.from(await file.arrayBuffer());
+      
+      if (buffer.byteLength > MAX_SIZE) {
+        return NextResponse.json({ message: "Fichier trop volumineux (max 10 Mo)" }, { status: 400 });
+      }
+    } else {
+      // ─ JSON base64 (legacy) ─
+      const body = await req.json() as { dataUrl?: string; mime?: string };
+      const { dataUrl } = body;
+      mime = body.mime ?? "";
+
+      if (!dataUrl || !mime) {
+        return NextResponse.json({ message: "Données manquantes" }, { status: 400 });
+      }
+      if (!ALLOWED_MIME.includes(mime)) {
+        return NextResponse.json({ message: "Format non autorisé (JPG, PNG, WEBP ou PDF)" }, { status: 400 });
+      }
+
+      // Décoder le base64
+      const base64Data = dataUrl.includes(",") ? dataUrl.split(",")[1] : dataUrl;
+      buffer = Buffer.from(base64Data, "base64");
+
+      if (buffer.byteLength > MAX_SIZE) {
+        return NextResponse.json({ message: "Fichier trop volumineux (max 10 Mo)" }, { status: 400 });
+      }
     }
 
     const uuid = randomUUID();

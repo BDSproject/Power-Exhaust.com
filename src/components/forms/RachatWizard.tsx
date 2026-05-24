@@ -702,11 +702,14 @@ export function RachatWizard() {
       if (!res.ok) { setError(json.message ?? t("error_submission")); return; }
 
       if (ribDataUrl && ribMime && json.id) {
-        await fetch(`/api/rib/${json.id}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ dataUrl: ribDataUrl, mime: ribMime }),
-        }).catch((e) => console.error("[RIB_UPLOAD]", e));
+        const formData = new FormData();
+        if (ribFile) {
+          formData.append("file", ribFile);
+          await fetch(`/api/rib/${json.id}`, {
+            method: "POST",
+            body: formData,
+          }).catch((e) => console.error("[RIB_UPLOAD]", e));
+        }
       }
 
       setReferenceId(json.reference);

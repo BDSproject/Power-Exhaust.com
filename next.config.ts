@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
+  // Configuration des limites de requête pour les photos en base64
+  serverRuntimeConfig: {
+    bodyParser: {
+      sizeLimit: "50mb",
+    },
+  },
   // Optimisations
   poweredByHeader: false,
   compress: true,

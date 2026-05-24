@@ -669,6 +669,8 @@ export function RachatWizard() {
     if (!signature) { setError(t("error_sign_required")); return; }
     setError(null);
     try {
+      // Étape 1: Convertir les photos en base64
+      console.log("[RACHAT_SUBMIT] Début conversion photos...");
       const photoBase64s: string[] = [];
       for (const file of photos) {
         if (!file) continue;
@@ -679,7 +681,10 @@ export function RachatWizard() {
         });
         photoBase64s.push(b64);
       }
+      console.log(`[RACHAT_SUBMIT] Photos converties: ${photoBase64s.length} photos`);
 
+      // Étape 2: Créer le payload
+      console.log("[RACHAT_SUBMIT] Création du payload...");
       const payload = {
         ...data,
         exhaustModelId: undefined,
@@ -693,31 +698,44 @@ export function RachatWizard() {
         signatureVendeur: signature,
       };
 
+      // Étape 3: Envoyer au serveur
+      console.log("[RACHAT_SUBMIT] Envoi au serveur...");
       const res = await fetch("/api/rachat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
+      console.log(`[RACHAT_SUBMIT] Réponse reçue: ${res.status}`);
       const json = await res.json();
-      if (!res.ok) { setError(json.message ?? t("error_submission")); return; }
+      if (!res.ok) { 
+        console.error("[RACHAT_SUBMIT] Erreur serveur:", json);
+        setError(json.message ?? t("error_submission")); 
+        return; 
+      }
 
+      console.log("[RACHAT_SUBMIT] Rachat créé avec succès, ID:", json.id);
+
+      // Étape 4: Upload du RIB (non bloquant)
       if (ribDataUrl && ribMime && json.id) {
+        console.log("[RACHAT_SUBMIT] Envoi du RIB...");
         const formData = new FormData();
         if (ribFile) {
           formData.append("file", ribFile);
           await fetch(`/api/rib/${json.id}`, {
             method: "POST",
             body: formData,
-          }).catch((e) => console.error("[RIB_UPLOAD]", e));
+          }).catch((e) => console.error("[RIB_UPLOAD] Erreur:", e));
         }
       }
 
+      console.log("[RACHAT_SUBMIT] Succès complet");
       setReferenceId(json.reference);
       setRachatId(json.id ?? null);
       setSubmittedEmail(data.emailVendeur);
       setSubmitted(true);
-    } catch {
+    } catch (error) {
+      console.error("[RACHAT_SUBMIT] Exception:", error);
       setError(t("error_network"));
     }
   };

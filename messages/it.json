@@ -208,8 +208,8 @@
     "save": "Salva"
   },
   "wizard": {
-    "etat_excellent_label": "Nuovo",
-    "etat_excellent_desc": "Mai usato o condizioni impeccabili, nessun difetto",
+    "etat_excellent_label": "Nuova",
+    "etat_excellent_desc": "Mai usata o condizioni impeccabili, nessun difetto",
     "etat_bon_label": "Buono",
     "etat_bon_desc": "Leggeri segni d'uso, funziona perfettamente",
     "etat_moyen_label": "Discreto",

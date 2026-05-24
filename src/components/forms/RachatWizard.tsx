@@ -766,7 +766,7 @@ export function RachatWizard() {
 
         {/* Bouton pour voir la demande */}
         <a 
-          href={`/rachats/${rachatId}`}
+          href={`/suivi/${rachatId}`}
           className="inline-block bg-exhaust-orange hover:bg-exhaust-orange-dark text-white font-bold py-3 px-8 rounded-xl transition-colors mb-6"
         >
           👁️ Voir ma demande →

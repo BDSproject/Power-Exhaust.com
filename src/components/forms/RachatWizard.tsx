@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { SignaturePad } from "@/components/forms/SignaturePad";
 import { IdentiteUploadStep } from "@/components/forms/IdentiteUploadStep";
+import { compressImageFile } from "@/lib/image-compression";
 
 interface ExhaustBrand {
   id: string;
@@ -680,19 +681,24 @@ export function RachatWizard() {
     setSignatureError(null);
     setRibError(null);
     try {
-      // Étape 1: Convertir les photos en base64
-      console.log("[RACHAT_SUBMIT] Début conversion photos...");
+      // Étape 1: Compresser et convertir les photos en base64
+      console.log("[RACHAT_SUBMIT] Début compression des photos...");
       const photoBase64s: string[] = [];
       for (const file of photos) {
         if (!file) continue;
-        const b64 = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.readAsDataURL(file);
-        });
-        photoBase64s.push(b64);
+        try {
+          photoBase64s.push(await compressImageFile(file));
+        } catch {
+          // Fallback : base64 brut si la compression échoue
+          const b64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          });
+          photoBase64s.push(b64);
+        }
       }
-      console.log(`[RACHAT_SUBMIT] Photos converties: ${photoBase64s.length} photos`);
+      console.log(`[RACHAT_SUBMIT] Photos compressées: ${photoBase64s.length} photos`);
 
       // Étape 2: Créer le payload
       console.log("[RACHAT_SUBMIT] Création du payload...");
@@ -718,13 +724,22 @@ export function RachatWizard() {
       });
 
       console.log(`[RACHAT_SUBMIT] Réponse reçue: ${res.status}`);
-      const json = await res.json();
-      if (!res.ok) { 
-        console.error("[RACHAT_SUBMIT] Erreur serveur:", json);
-        setError(json.message ?? t("error_submission")); 
-        return; 
+      if (!res.ok) {
+        // Tenter de lire le JSON d'erreur, sinon message générique (évite le faux
+        // « erreur réseau » quand le serveur renvoie une page HTML, ex: 413).
+        let message: string = t("error_submission");
+        try {
+          const errJson = await res.json();
+          if (errJson?.message) message = errJson.message;
+        } catch {
+          message = `${t("error_submission")} (HTTP ${res.status})`;
+        }
+        console.error("[RACHAT_SUBMIT] Erreur serveur:", { status: res.status, message });
+        setError(message);
+        return;
       }
 
+      const json = await res.json();
       console.log("[RACHAT_SUBMIT] Rachat créé avec succès, ID:", json.id);
 
       // Étape 4: Upload du RIB (non bloquant)

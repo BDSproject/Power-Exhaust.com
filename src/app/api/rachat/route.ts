@@ -71,8 +71,8 @@ export async function POST(req: NextRequest) {
     const signatureVendeurUa = req.headers.get("user-agent") ?? "inconnu";
 
     const etat = data.etatEchappement as EtatRachat;
-    const prixOfficiel = ["EXCELLENT", "BON", "MOYEN"].includes(etat) && data.typeEchappement
-      ? getPrixRachat(data.typeEchappement, etat, data.marque || undefined)
+    const prixOfficiel = ["EXCELLENT", "BON", "MOYEN"].includes(etat) && data.marqueEchappement
+      ? getPrixRachat(data.marqueEchappement, etat, data.marque || undefined)
       : null;
 
     // Token sécurisé pour validation/refus par email

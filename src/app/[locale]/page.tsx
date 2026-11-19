@@ -50,25 +50,21 @@ export default function HomePage() {
 
   const STEPS = [
     {
-      n: "01",
       icon: <Tag className="w-6 h-6" />,
       title: t("steps.s1_title"),
       desc: t("steps.s1_desc"),
     },
     {
-      n: "02",
       icon: <Search className="w-6 h-6" />,
       title: t("steps.s2_title"),
       desc: t("steps.s2_desc"),
     },
     {
-      n: "03",
       icon: <CheckCircle2 className="w-6 h-6" />,
       title: t("steps.s3_title"),
       desc: t("steps.s3_desc"),
     },
     {
-      n: "04",
       icon: <Banknote className="w-6 h-6" />,
       title: t("steps.s4_title"),
       desc: t("steps.s4_desc"),
@@ -206,17 +202,20 @@ export default function HomePage() {
             {t("steps.title")} <span className="text-exhaust-orange">{t("steps.title_paid")}</span>
           </h2>
 
-          <div className="grid md:grid-cols-4 gap-px bg-white/10 border border-white/10">
-            {STEPS.map((step) => (
-              <div key={step.n} className="bg-exhaust-dark p-8 group hover:bg-[#111] transition-colors">
-                <div className="flex items-center justify-between mb-8">
-                  <span className="text-exhaust-orange">{step.icon}</span>
-                  <span className="font-display font-bold text-2xl text-white/20">{step.n}</span>
+          <div className="relative">
+            {/* Ligne de flux */}
+            <div className="hidden md:block absolute top-1 left-0 right-0 h-px bg-white/15" aria-hidden />
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+              {STEPS.map((step) => (
+                <div key={step.title} className="relative pt-10">
+                  <span className="absolute top-0 left-0 w-3 h-3 bg-exhaust-orange rotate-45 -translate-y-1/2" aria-hidden />
+                  <div className="text-exhaust-orange mb-5">{step.icon}</div>
+                  <h3 className="font-display font-bold uppercase tracking-tight text-xl text-white mb-3">{step.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
                 </div>
-                <h3 className="font-display font-bold uppercase tracking-tight text-xl text-white mb-3">{step.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           <div className="mt-12">

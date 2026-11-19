@@ -816,13 +816,13 @@ export function RachatWizard() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-left space-y-4 mb-8">
           <h3 className="font-bold text-white text-sm uppercase tracking-wider mb-4">{t("next_steps_title")}</h3>
           {[
-            { n: "1", color: "bg-amber-500",     text: t("next_step_1") },
-            { n: "2", color: "bg-exhaust-orange", text: t("next_step_2") },
-            { n: "3", color: "bg-green-500",      text: t("next_step_3") },
-          ].map((s) => (
-            <div key={s.n} className="flex items-start gap-3">
-              <span className={`w-6 h-6 rounded-full ${s.color} text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5`}>{s.n}</span>
-              <p className="text-gray-300 text-sm" dangerouslySetInnerHTML={{ __html: s.text }} />
+            t("next_step_1"),
+            t("next_step_2"),
+            t("next_step_3"),
+          ].map((text, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <span className="w-2 h-2 bg-exhaust-orange rotate-45 flex-shrink-0 mt-1.5" aria-hidden />
+              <p className="text-gray-300 text-sm" dangerouslySetInnerHTML={{ __html: text }} />
             </div>
           ))}
         </div>

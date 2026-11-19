@@ -6,14 +6,14 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
 const LOCALES = [
-  { code: "fr", label: "Français", flag: "🇫🇷" },
-  { code: "en", label: "English", flag: "🇬🇧" },
-  { code: "de", label: "Deutsch", flag: "🇩🇪" },
-  { code: "es", label: "Español", flag: "🇪🇸" },
-  { code: "it", label: "Italiano", flag: "🇮🇹" },
-  { code: "pt", label: "Português", flag: "🇵🇹" },
-  { code: "nl", label: "Nederlands", flag: "🇳🇱" },
-  { code: "pl", label: "Polski", flag: "🇵🇱" },
+  { code: "fr", label: "Français" },
+  { code: "en", label: "English" },
+  { code: "de", label: "Deutsch" },
+  { code: "es", label: "Español" },
+  { code: "it", label: "Italiano" },
+  { code: "pt", label: "Português" },
+  { code: "nl", label: "Nederlands" },
+  { code: "pl", label: "Polski" },
 ];
 
 export default function LanguageSwitcher() {
@@ -47,8 +47,7 @@ export default function LanguageSwitcher() {
         className="flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-white transition-colors px-2.5 py-1.5 rounded-lg"
         style={{ border: "1px solid rgba(255,255,255,0.08)" }}
       >
-        <span className="text-base leading-none">{current.flag}</span>
-        <span className="hidden sm:inline text-xs">{current.code.toUpperCase()}</span>
+        <span className="font-display font-bold uppercase text-xs leading-none">{current.code.toUpperCase()}</span>
         <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
@@ -70,7 +69,7 @@ export default function LanguageSwitcher() {
                 l.code === locale ? "text-white font-semibold" : "text-gray-400"
               }`}
             >
-              <span className="text-base">{l.flag}</span>
+              <span className="font-display font-bold uppercase text-xs w-6">{l.code}</span>
               <span>{l.label}</span>
               {l.code === locale && (
                 <span className="ml-auto w-1.5 h-1.5 rounded-full bg-exhaust-orange" />

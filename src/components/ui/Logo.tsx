@@ -9,15 +9,15 @@ interface LogoProps {
 
 export function PowerExhaustLogo({ className = "", size = "md", href = "/" }: LogoProps) {
   const fontSizes = {
-    sm: "text-xl",
-    md: "text-2xl",
-    lg: "text-3xl",
+    sm: "text-2xl",
+    md: "text-3xl",
+    lg: "text-4xl",
   }[size];
 
   const content = (
     <span className={`flex items-center ${className}`}>
-      <span className={`font-black tracking-tight leading-none ${fontSizes}`}>
-        <span className="text-white">POWER-</span><span className="text-[#E30613]">EXHAUST</span>
+      <span className={`font-display font-extrabold uppercase tracking-tight leading-none ${fontSizes}`}>
+        <span className="text-white">Power</span><span className="text-exhaust-orange">Exhaust</span>
       </span>
     </span>
   );

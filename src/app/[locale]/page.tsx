@@ -7,23 +7,33 @@ import { PowerExhaustLogo } from "@/components/ui/Logo";
 import { getTranslations } from "next-intl/server";
 import {
   Tag, Search, CheckCircle2, Banknote, Package, Zap,
-  ClipboardList, Trophy, Mail, Phone, Clock, Wrench,
-  ArrowRight, Shield, FileText, Layers, Lock, ShieldCheck, Eye, Trash2, Scale
+  Trophy, Mail, Phone, Clock,
+  ArrowRight, ArrowUpRight, Shield, FileText, Lock, ShieldCheck, Eye, Trash2, Scale
 } from "lucide-react";
 
 const BRANDS_PREVIEW = [
-  { name: "Akrapovic", emoji: "🇸🇮", origine: "Slovénie", highlight: true },
-  { name: "Yoshimura", emoji: "🇯🇵", origine: "Japon", highlight: true },
-  { name: "Arrow", emoji: "🇮🇹", origine: "Italie", highlight: false },
-  { name: "Leovince", emoji: "🇮🇹", origine: "Italie", highlight: false },
-  { name: "Termignoni", emoji: "🇮🇹", origine: "Italie", highlight: true },
-  { name: "SC-Project", emoji: "🇮🇹", origine: "Italie", highlight: false },
-  { name: "Mivv", emoji: "🇮🇹", origine: "Italie", highlight: false },
-  { name: "Austin Racing", emoji: "🇬🇧", origine: "Royaume-Uni", highlight: false },
-  { name: "Remus", emoji: "🇦🇹", origine: "Autriche", highlight: false },
-  { name: "GPR", emoji: "🇮🇹", origine: "Italie", highlight: false },
-  { name: "FMF Racing", emoji: "🇺🇸", origine: "États-Unis", highlight: false },
-  { name: "Vance & Hines", emoji: "🇺🇸", origine: "États-Unis", highlight: false },
+  { name: "Akrapovic", code: "SI", origine: "Slovénie", highlight: true },
+  { name: "Yoshimura", code: "JP", origine: "Japon", highlight: true },
+  { name: "Arrow", code: "IT", origine: "Italie", highlight: false },
+  { name: "Leovince", code: "IT", origine: "Italie", highlight: false },
+  { name: "Termignoni", code: "IT", origine: "Italie", highlight: true },
+  { name: "SC-Project", code: "IT", origine: "Italie", highlight: false },
+  { name: "Mivv", code: "IT", origine: "Italie", highlight: false },
+  { name: "Austin Racing", code: "GB", origine: "Royaume-Uni", highlight: false },
+  { name: "Remus", code: "AT", origine: "Autriche", highlight: false },
+  { name: "GPR", code: "IT", origine: "Italie", highlight: false },
+  { name: "FMF Racing", code: "US", origine: "États-Unis", highlight: false },
+  { name: "Vance & Hines", code: "US", origine: "États-Unis", highlight: false },
+];
+
+const COUNTRIES = [
+  { code: "SI", pays: "Slovénie", ex: "Akrapovic" },
+  { code: "JP", pays: "Japon", ex: "Yoshimura" },
+  { code: "IT", pays: "Italie", ex: "Arrow · Leovince · Termignoni · SC-Project · Mivv · GPR" },
+  { code: "GB", pays: "Royaume-Uni", ex: "Austin Racing" },
+  { code: "AT", pays: "Autriche", ex: "Remus · Dominator" },
+  { code: "US", pays: "États-Unis", ex: "FMF · Vance & Hines · Two Brothers" },
+  { code: "DE", pays: "Allemagne", ex: "Ligne d'Origine OEM" },
 ];
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -41,41 +51,37 @@ export default function HomePage() {
   const STEPS = [
     {
       n: "01",
-      icon: <Tag className="w-7 h-7 text-white" />,
+      icon: <Tag className="w-6 h-6" />,
       title: t("steps.s1_title"),
       desc: t("steps.s1_desc"),
-      color: "from-red-600 to-red-800",
     },
     {
       n: "02",
-      icon: <Search className="w-7 h-7 text-white" />,
+      icon: <Search className="w-6 h-6" />,
       title: t("steps.s2_title"),
       desc: t("steps.s2_desc"),
-      color: "from-red-500 to-red-700",
     },
     {
       n: "03",
-      icon: <CheckCircle2 className="w-7 h-7 text-white" />,
+      icon: <CheckCircle2 className="w-6 h-6" />,
       title: t("steps.s3_title"),
       desc: t("steps.s3_desc"),
-      color: "from-gray-600 to-gray-800",
     },
     {
       n: "04",
-      icon: <Banknote className="w-7 h-7 text-white" />,
+      icon: <Banknote className="w-6 h-6" />,
       title: t("steps.s4_title"),
       desc: t("steps.s4_desc"),
-      color: "from-green-500 to-emerald-500",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-exhaust-dark">
+    <div className="min-h-screen bg-exhaust-dark text-white">
       <ScrollReveal />
 
       {/* ── NAVBAR ── */}
-      <nav className="sticky top-0 z-50 bg-[#111111]/95 backdrop-blur border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-exhaust-dark/90 border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <PowerExhaustLogo size="sm" href="/" />
 
           <div className="hidden md:flex items-center gap-8 text-sm text-gray-400 font-medium">
@@ -90,18 +96,17 @@ export default function HomePage() {
             </a>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <LanguageSwitcher />
             <Link
               href="/suivi"
-              className="hidden sm:inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors font-medium px-3 py-2"
+              className="hidden sm:inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors font-medium"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
               {t("nav.trackFile")}
             </Link>
             <Link
               href="/rachat"
-              className="bg-exhaust-orange hover:bg-exhaust-orange-dark text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all"
+              className="bg-exhaust-orange hover:bg-exhaust-orange-dark text-white text-sm font-bold px-5 py-2.5 rounded-md transition-colors"
             >
               {t("nav.sell")}
             </Link>
@@ -110,48 +115,47 @@ export default function HomePage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative min-h-[88vh] flex items-center overflow-hidden bg-exhaust-dark">
+      <section className="relative overflow-hidden bg-exhaust-dark">
         <div className="absolute inset-0">
           <img
             src="/banner-hero.png"
-            alt="Power Exhaust banner"
-            className="w-full h-full object-contain object-right"
-            style={{ opacity: 0.55 }}
+            alt=""
+            aria-hidden
+            className="w-full h-full object-cover object-right opacity-25"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-exhaust-dark via-exhaust-dark/80 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-exhaust-dark to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-exhaust-dark via-exhaust-dark/85 to-exhaust-dark/40" />
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-exhaust-dark to-transparent" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 py-20 w-full">
+        <div className="relative max-w-6xl mx-auto px-6 py-24 md:py-32">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-exhaust-orange/10 border border-exhaust-orange/30 rounded-full px-4 py-2 text-exhaust-orange text-xs font-semibold mb-8">
-              <span className="w-2 h-2 rounded-full bg-exhaust-orange animate-pulse" />
-              {t("hero.badge")}
+            <div className="flex items-center gap-3 mb-8">
+              <span className="h-px w-10 bg-exhaust-orange" />
+              <span className="text-exhaust-orange text-xs font-bold uppercase tracking-[0.2em]">
+                {t("hero.badge")}
+              </span>
             </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.95] mb-8 tracking-tight">
-              {t("hero.title1")}<br />
-              <span className="text-exhaust-orange">{t("hero.title2")}</span>
-              <br />
-              <span className="text-gray-300">{t("hero.title3")}</span>
+            <h1 className="font-display font-extrabold uppercase leading-[0.9] tracking-tight text-5xl md:text-7xl lg:text-8xl text-white mb-8">
+              {t("hero.title1")}{" "}
+              <span className="text-exhaust-orange">{t("hero.title2")}</span>{" "}
+              {t("hero.title3")}
             </h1>
 
             <p className="text-gray-400 text-lg leading-relaxed mb-10 max-w-xl">
               {t("hero.desc")}
             </p>
 
-            <div className="flex flex-wrap gap-3 mb-10">
+            <div className="flex flex-wrap gap-x-8 gap-y-3 mb-12">
               {[
-                { icon: <Banknote className="w-3.5 h-3.5" />, text: t("hero.badge_price") },
-                { icon: <Zap className="w-3.5 h-3.5" />, text: t("hero.badge_payment") },
-                { icon: <FileText className="w-3.5 h-3.5" />, text: t("hero.badge_cert") },
-                { icon: <Shield className="w-3.5 h-3.5" />, text: t("hero.badge_secure") },
+                { icon: <Banknote className="w-4 h-4" />, text: t("hero.badge_price") },
+                { icon: <Zap className="w-4 h-4" />, text: t("hero.badge_payment") },
+                { icon: <FileText className="w-4 h-4" />, text: t("hero.badge_cert") },
+                { icon: <Shield className="w-4 h-4" />, text: t("hero.badge_secure") },
               ].map((b) => (
-                <span
-                  key={b.text}
-                  className="inline-flex items-center gap-1.5 text-sm text-gray-300 bg-white/5 border border-white/10 rounded-full px-4 py-1.5"
-                >
-                  {b.icon}{b.text}
+                <span key={b.text} className="inline-flex items-center gap-2 text-sm text-gray-300">
+                  <span className="text-exhaust-orange">{b.icon}</span>
+                  {b.text}
                 </span>
               ))}
             </div>
@@ -159,30 +163,30 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/rachat"
-                className="bg-exhaust-orange hover:bg-exhaust-orange-dark text-white font-bold px-8 py-4 rounded-xl transition-all text-center text-lg inline-flex items-center justify-center gap-2"
+                className="group bg-exhaust-orange hover:bg-exhaust-orange-dark text-white font-bold px-8 py-4 rounded-md transition-colors text-lg inline-flex items-center justify-center gap-2"
               >
                 <Trophy className="w-5 h-5" /> {t("hero.cta_estimate")}
+                <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
               <a
                 href="#comment-ca-marche"
-                className="border border-white/15 text-gray-300 hover:text-white hover:border-white/30 font-semibold px-8 py-4 rounded-xl transition-all text-center"
+                className="border border-white/20 text-gray-200 hover:text-white hover:border-white/40 font-semibold px-8 py-4 rounded-md transition-colors text-center"
               >
                 {t("hero.cta_how")}
               </a>
             </div>
           </div>
 
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
+          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 border-t border-white/10">
             {[
-              { value: "+50", label: t("hero.stat_buybacks"), icon: <Wrench className="w-5 h-5 text-exhaust-orange" /> },
-              { value: "48h", label: t("hero.stat_payment"), icon: <Zap className="w-5 h-5 text-exhaust-orange" /> },
-              { value: "56+", label: t("hero.stat_models"), icon: <ClipboardList className="w-5 h-5 text-exhaust-orange" /> },
-              { value: "16", label: t("hero.stat_brands"), icon: <Layers className="w-5 h-5 text-exhaust-orange" /> },
+              { value: "+50", label: t("hero.stat_buybacks") },
+              { value: "48h", label: t("hero.stat_payment") },
+              { value: "56+", label: t("hero.stat_models") },
+              { value: "16", label: t("hero.stat_brands") },
             ].map((stat) => (
-              <div key={stat.label} className="glass-dark rounded-2xl p-5">
-                <span className="mb-2 block">{stat.icon}</span>
-                <p className="text-3xl font-black text-white">{stat.value}</p>
-                <p className="text-gray-400 text-xs mt-1">{stat.label}</p>
+              <div key={stat.label} className="py-6 pr-6 md:border-r md:border-white/10 md:last:border-r-0">
+                <p className="font-display font-bold text-4xl md:text-5xl text-white">{stat.value}</p>
+                <p className="text-gray-500 text-sm mt-2">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -190,37 +194,35 @@ export default function HomePage() {
       </section>
 
       {/* ── COMMENT ÇA MARCHE ── */}
-      <section id="comment-ca-marche" className="py-24 bg-exhaust-dark reveal-section">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <span className="inline-block bg-exhaust-orange/20 text-exhaust-orange text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+      <section id="comment-ca-marche" className="py-24 bg-exhaust-dark border-t border-white/10 reveal-section">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="h-px w-10 bg-exhaust-orange" />
+            <span className="text-exhaust-orange text-xs font-bold uppercase tracking-[0.2em]">
               {t("steps.badge")}
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-white leading-tight">
-              {t("steps.title")}<br />
-              <span className="text-exhaust-orange">{t("steps.title_paid")}</span>
-            </h2>
           </div>
+          <h2 className="font-display font-extrabold uppercase tracking-tight text-4xl md:text-6xl text-white leading-none mb-16">
+            {t("steps.title")} <span className="text-exhaust-orange">{t("steps.title_paid")}</span>
+          </h2>
 
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-4 gap-px bg-white/10 border border-white/10">
             {STEPS.map((step) => (
-              <div key={step.n} className="relative bg-exhaust-gray rounded-2xl p-6 border border-white/10 hover:border-exhaust-orange/40 hover:shadow-lg transition-all group">
-                <div className="absolute top-4 right-4 text-6xl font-black text-white/8 select-none group-hover:text-exhaust-orange/20 transition-colors">
-                  {step.n}
+              <div key={step.n} className="bg-exhaust-dark p-8 group hover:bg-[#111] transition-colors">
+                <div className="flex items-center justify-between mb-8">
+                  <span className="text-exhaust-orange">{step.icon}</span>
+                  <span className="font-display font-bold text-2xl text-white/20">{step.n}</span>
                 </div>
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform`}>
-                  {step.icon}
-                </div>
-                <h3 className="font-bold text-white text-lg mb-2">{step.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
+                <h3 className="font-display font-bold uppercase tracking-tight text-xl text-white mb-3">{step.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 text-center">
+          <div className="mt-12">
             <Link
               href="/rachat"
-              className="inline-flex items-center gap-2 bg-exhaust-orange hover:bg-exhaust-orange-dark text-white font-bold px-8 py-4 rounded-xl transition-all text-lg"
+              className="inline-flex items-center gap-2 text-exhaust-orange font-bold hover:gap-3 transition-all"
             >
               {t("steps.cta")} <ArrowRight className="w-5 h-5" />
             </Link>
@@ -229,101 +231,86 @@ export default function HomePage() {
       </section>
 
       {/* ── MARQUES ── */}
-      <section id="marques" className="py-24 bg-exhaust-dark reveal-section">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <span className="inline-block bg-exhaust-orange/20 text-exhaust-orange text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+      <section id="marques" className="py-24 bg-exhaust-dark border-t border-white/10 reveal-section">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="h-px w-10 bg-exhaust-orange" />
+            <span className="text-exhaust-orange text-xs font-bold uppercase tracking-[0.2em]">
               {t("brands.badge")}
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-white">
-              {t("brands.title")}
-            </h2>
-            <p className="text-gray-400 mt-4 text-lg max-w-2xl mx-auto">
-              {t("brands.desc")}
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-3 mt-8">
-              {[
-                { flag: "🇸🇮", pays: "Slovénie", ex: "Akrapovic" },
-                { flag: "🇯🇵", pays: "Japon", ex: "Yoshimura" },
-                { flag: "🇮🇹", pays: "Italie", ex: "Arrow · Leovince · Termignoni · SC-Project · Mivv · GPR" },
-                { flag: "🇬🇧", pays: "Royaume-Uni", ex: "Austin Racing" },
-                { flag: "🇦🇹", pays: "Autriche", ex: "Remus · Dominator" },
-                { flag: "🇺🇸", pays: "États-Unis", ex: "FMF · Vance & Hines · Two Brothers" },
-                { flag: "🇩🇪", pays: "Allemagne", ex: "Ligne d'Origine OEM" },
-              ].map(({ flag, pays, ex }) => (
-                <div
-                  key={pays}
-                  className="group relative flex items-center gap-2 bg-exhaust-gray border border-white/10 rounded-xl px-4 py-2.5 shadow-sm hover:border-exhaust-orange/40 hover:shadow-md transition-all cursor-default"
-                >
-                  <span className="text-2xl">{flag}</span>
-                  <div className="text-left">
-                    <p className="text-xs font-bold text-white leading-none">{pays}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5 leading-none">{ex}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
+          <h2 className="font-display font-extrabold uppercase tracking-tight text-4xl md:text-6xl text-white leading-none mb-6">
+            {t("brands.title")}
+          </h2>
+          <p className="text-gray-400 text-lg max-w-2xl mb-12">
+            {t("brands.desc")}
+          </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {BRANDS_PREVIEW.map((brand) => (
-              <div
-                key={brand.name}
-                className={`rounded-2xl p-5 text-center border transition-all hover:scale-105 cursor-default ${
-                  brand.highlight
-                    ? "bg-exhaust-gray border-exhaust-orange/40 shadow-md shadow-black/40"
-                    : "bg-exhaust-gray border-white/10"
-                }`}
-              >
-                <div className="text-3xl mb-2">{brand.emoji}</div>
-                <p className="font-bold text-white text-sm">{brand.name}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{brand.origine}</p>
-                {brand.highlight && (
-                  <span className="inline-block mt-2 text-[10px] font-bold bg-exhaust-orange/20 text-exhaust-orange px-2 py-0.5 rounded-full">
-                    TOP
-                  </span>
-                )}
+          <div className="flex flex-wrap gap-x-10 gap-y-4 mb-16">
+            {COUNTRIES.map(({ code, pays, ex }) => (
+              <div key={pays} className="flex items-center gap-3">
+                <span className="font-display font-bold text-lg text-exhaust-orange w-8">{code}</span>
+                <div>
+                  <p className="text-sm font-semibold text-white">{pays}</p>
+                  <p className="text-xs text-gray-500">{ex}</p>
+                </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-8 text-center">
-            <p className="text-gray-400 text-sm">{t("brands.more")}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-px bg-white/10 border border-white/10">
+            {BRANDS_PREVIEW.map((brand) => (
+              <div key={brand.name} className="bg-exhaust-dark p-6 text-center hover:bg-[#111] transition-colors">
+                <p className={`font-display font-bold text-sm uppercase tracking-wide ${brand.highlight ? "text-exhaust-orange" : "text-white/40"}`}>
+                  {brand.code}
+                </p>
+                <p className="font-bold text-white text-sm mt-2">{brand.name}</p>
+                <p className="text-xs text-gray-500 mt-1">{brand.origine}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10">
             <Link
               href="/rachat"
-              className="inline-flex items-center gap-2 mt-6 text-exhaust-orange font-bold hover:underline"
+              className="inline-flex items-center gap-2 text-exhaust-orange font-bold hover:gap-3 transition-all"
             >
-              {t("brands.cta")}
+              {t("brands.cta")} <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* ── PAIEMENT 48H ── */}
-      <section className="py-16 exhaust-gradient">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-6 items-center">
-            <div className="md:col-span-2">
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                {t("payment.title")}<br />
-                <span className="text-exhaust-orange">{t("payment.title_fast")}</span> {t("payment.title_after")}
+      <section className="py-24 bg-[#0D0D0D] border-t border-white/10">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-start">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="h-px w-10 bg-exhaust-orange" />
+                <span className="text-exhaust-orange text-xs font-bold uppercase tracking-[0.2em]">
+                  {t("hero.badge_payment")}
+                </span>
+              </div>
+              <h2 className="font-display font-extrabold uppercase tracking-tight text-4xl md:text-6xl text-white leading-none mb-6">
+                {t("payment.title")} <span className="text-exhaust-orange">{t("payment.title_fast")}</span> {t("payment.title_after")}
               </h2>
               <p className="text-gray-400 text-lg leading-relaxed">
                 {t("payment.desc")}
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-4">
+
+            <div className="divide-y divide-white/10 border border-white/10">
               {[
-                { icon: <Package className="w-6 h-6 text-exhaust-orange" />, title: t("payment.step1_title"), desc: t("payment.step1_desc") },
-                { icon: <Search className="w-6 h-6 text-exhaust-orange" />, title: t("payment.step2_title"), desc: t("payment.step2_desc") },
-                { icon: <Banknote className="w-6 h-6 text-exhaust-orange" />, title: t("payment.step3_title"), desc: t("payment.step3_desc") },
+                { icon: <Package className="w-5 h-5" />, title: t("payment.step1_title"), desc: t("payment.step1_desc") },
+                { icon: <Search className="w-5 h-5" />, title: t("payment.step2_title"), desc: t("payment.step2_desc") },
+                { icon: <Banknote className="w-5 h-5" />, title: t("payment.step3_title"), desc: t("payment.step3_desc") },
               ].map((item) => (
-                <div key={item.title} className="glass-dark rounded-xl p-4 flex items-center gap-4">
-                  <span>{item.icon}</span>
+                <div key={item.title} className="flex items-center gap-5 py-6 first:pt-0 last:pb-0">
+                  <span className="text-exhaust-orange flex-shrink-0">{item.icon}</span>
                   <div>
-                    <p className="text-white font-bold text-sm">{item.title}</p>
-                    <p className="text-gray-400 text-xs">{item.desc}</p>
+                    <p className="text-white font-bold">{item.title}</p>
+                    <p className="text-gray-500 text-sm">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -333,85 +320,79 @@ export default function HomePage() {
       </section>
 
       {/* ── POURQUOI NOUS ── */}
-      <section id="pourquoi-nous" className="py-24 bg-exhaust-dark reveal-section">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-0">
-            <span className="inline-block bg-exhaust-orange/20 text-exhaust-orange text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+      <section id="pourquoi-nous" className="py-24 bg-exhaust-dark border-t border-white/10 reveal-section">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="h-px w-10 bg-exhaust-orange" />
+            <span className="text-exhaust-orange text-xs font-bold uppercase tracking-[0.2em]">
               {t("whyUs.badge")}
             </span>
-            <h2 className="text-4xl font-black text-white">
-              {t("whyUs.title")}
-            </h2>
           </div>
+          <h2 className="font-display font-extrabold uppercase tracking-tight text-4xl md:text-6xl text-white leading-none mb-16">
+            {t("whyUs.title")}
+          </h2>
           <WhyUsInteractive />
         </div>
       </section>
 
       {/* ── SÉCURITÉ & RGPD ── */}
-      <section className="py-24 bg-[#080808]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <span className="inline-block bg-green-500/15 text-green-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+      <section className="py-24 bg-[#0D0D0D] border-t border-white/10">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="h-px w-10 bg-exhaust-orange" />
+            <span className="text-exhaust-orange text-xs font-bold uppercase tracking-[0.2em]">
               {t("security.badge")}
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-4">
-              {t("security.title")}<br />
-              <span className="text-green-400">{t("security.title_protected")}</span>
-            </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
-              {t("security.desc")}
-            </p>
           </div>
+          <h2 className="font-display font-extrabold uppercase tracking-tight text-4xl md:text-6xl text-white leading-none mb-6">
+            {t("security.title")} <span className="text-exhaust-orange">{t("security.title_protected")}</span>
+          </h2>
+          <p className="text-gray-400 text-lg max-w-2xl mb-16">
+            {t("security.desc")}
+          </p>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid md:grid-cols-3 gap-px bg-white/10 border border-white/10">
             {[
-              { icon: <Lock className="w-6 h-6" />, color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", title: t("security.g1_title"), desc: t("security.g1_desc"), badge: t("security.g1_badge") },
-              { icon: <Trash2 className="w-6 h-6" />, color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", title: t("security.g2_title"), desc: t("security.g2_desc"), badge: t("security.g2_badge") },
-              { icon: <Eye className="w-6 h-6" />, color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", title: t("security.g3_title"), desc: t("security.g3_desc"), badge: t("security.g3_badge") },
-              { icon: <ShieldCheck className="w-6 h-6" />, color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", title: t("security.g4_title"), desc: t("security.g4_desc"), badge: t("security.g4_badge") },
-              { icon: <Scale className="w-6 h-6" />, color: "text-yellow-400", bg: "bg-yellow-500/10 border-yellow-500/20", title: t("security.g5_title"), desc: t("security.g5_desc"), badge: t("security.g5_badge") },
-              { icon: <FileText className="w-6 h-6" />, color: "text-gray-300", bg: "bg-white/5 border-white/10", title: t("security.g6_title"), desc: t("security.g6_desc"), badge: t("security.g6_badge") },
+              { icon: <Lock className="w-6 h-6" />, title: t("security.g1_title"), desc: t("security.g1_desc"), badge: t("security.g1_badge") },
+              { icon: <Trash2 className="w-6 h-6" />, title: t("security.g2_title"), desc: t("security.g2_desc"), badge: t("security.g2_badge") },
+              { icon: <Eye className="w-6 h-6" />, title: t("security.g3_title"), desc: t("security.g3_desc"), badge: t("security.g3_badge") },
+              { icon: <ShieldCheck className="w-6 h-6" />, title: t("security.g4_title"), desc: t("security.g4_desc"), badge: t("security.g4_badge") },
+              { icon: <Scale className="w-6 h-6" />, title: t("security.g5_title"), desc: t("security.g5_desc"), badge: t("security.g5_badge") },
+              { icon: <FileText className="w-6 h-6" />, title: t("security.g6_title"), desc: t("security.g6_desc"), badge: t("security.g6_badge") },
             ].map((item) => (
-              <div key={item.title} className={`relative border rounded-2xl p-6 ${item.bg} hover:scale-[1.02] transition-transform`}>
-                <div className={`${item.color} mb-4`}>{item.icon}</div>
-                <span className={`inline-block text-[10px] font-black uppercase tracking-widest ${item.color} bg-black/30 px-2 py-0.5 rounded-full mb-3`}>
+              <div key={item.title} className="bg-exhaust-dark p-8 hover:bg-[#111] transition-colors">
+                <div className="text-exhaust-orange mb-5">{item.icon}</div>
+                <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-4">
                   {item.badge}
                 </span>
-                <h3 className="text-white font-bold text-base mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+                <h3 className="font-display font-bold uppercase tracking-tight text-lg text-white mb-3">{item.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
 
-          <div className="bg-[#111] border border-white/8 rounded-2xl px-8 py-6">
-            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-sm text-gray-500">
-              <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-green-500" /><span>{t("security.cert1")}</span></span>
-              <span className="text-white/10">|</span>
-              <span className="flex items-center gap-2"><Lock className="w-4 h-4 text-blue-400" /><span>{t("security.cert2")}</span></span>
-              <span className="text-white/10">|</span>
-              <span className="flex items-center gap-2"><Trash2 className="w-4 h-4 text-orange-400" /><span>{t("security.cert3")}</span></span>
-              <span className="text-white/10">|</span>
-              <span className="flex items-center gap-2"><Scale className="w-4 h-4 text-yellow-400" /><span>{t("security.cert4")}</span></span>
-              <span className="text-white/10">|</span>
-              <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-purple-400" /><span>{t("security.cert5")}</span></span>
-            </div>
+          <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-4 text-sm text-gray-500">
+            <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-exhaust-orange" /><span>{t("security.cert1")}</span></span>
+            <span className="flex items-center gap-2"><Lock className="w-4 h-4 text-exhaust-orange" /><span>{t("security.cert2")}</span></span>
+            <span className="flex items-center gap-2"><Trash2 className="w-4 h-4 text-exhaust-orange" /><span>{t("security.cert3")}</span></span>
+            <span className="flex items-center gap-2"><Scale className="w-4 h-4 text-exhaust-orange" /><span>{t("security.cert4")}</span></span>
+            <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-exhaust-orange" /><span>{t("security.cert5")}</span></span>
           </div>
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 bg-exhaust-dark">
+      <section className="py-28 bg-exhaust-dark border-t border-white/10">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-            {t("cta.title")}<br />
-            <span className="text-exhaust-orange">{t("cta.title_exhaust")}</span>
+          <h2 className="font-display font-extrabold uppercase tracking-tight text-5xl md:text-7xl text-white leading-none mb-8">
+            {t("cta.title")} <span className="text-exhaust-orange">{t("cta.title_exhaust")}</span>
           </h2>
-          <p className="text-gray-400 text-lg mb-10 whitespace-pre-line">
+          <p className="text-gray-400 text-lg mb-12 whitespace-pre-line">
             {t("cta.desc")}
           </p>
           <Link
             href="/rachat"
-            className="inline-flex items-center gap-3 bg-exhaust-orange hover:bg-exhaust-orange-dark text-white font-black px-10 py-5 rounded-xl text-xl shadow-lg hover:shadow-xl transition-all"
+            className="inline-flex items-center gap-3 bg-exhaust-orange hover:bg-exhaust-orange-dark text-white font-bold px-10 py-5 rounded-md text-lg transition-colors"
           >
             <Trophy className="w-6 h-6" /> {t("cta.btn")}
           </Link>
@@ -419,51 +400,41 @@ export default function HomePage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer id="contact" className="bg-exhaust-dark text-white">
-        <div className="max-w-7xl mx-auto px-6 py-16">
+      <footer id="contact" className="bg-exhaust-dark border-t border-white/10">
+        <div className="max-w-6xl mx-auto px-6 py-16">
           <div className="grid md:grid-cols-4 gap-12">
             <div className="md:col-span-2">
-              <div className="mb-5">
+              <div className="mb-6">
                 <PowerExhaustLogo size="sm" href="/" />
               </div>
-              <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
+              <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
                 {t("footer.tagline")}
               </p>
             </div>
             <div>
-              <h4 className="font-bold mb-4 text-sm uppercase tracking-wider text-gray-300">{t("footer.nav_title")}</h4>
-              <ul className="space-y-2.5 text-gray-400 text-sm">
+              <h4 className="font-display font-bold uppercase tracking-wide text-sm text-gray-300 mb-5">{t("footer.nav_title")}</h4>
+              <ul className="space-y-3 text-gray-500 text-sm">
                 <li><Link href="/rachat" className="hover:text-white transition-colors">{t("footer.nav_sell")}</Link></li>
                 <li><a href="#comment-ca-marche" className="hover:text-white transition-colors">{t("footer.nav_how")}</a></li>
                 <li><a href="#marques" className="hover:text-white transition-colors">{t("footer.nav_brands")}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-4 text-sm uppercase tracking-wider text-gray-300">{t("footer.contact_title")}</h4>
-              <ul className="space-y-2.5 text-gray-400 text-sm">
-                <li className="flex items-center gap-2"><Mail className="w-3.5 h-3.5 flex-shrink-0" /> contact@power-exhaust.com</li>
-                <li className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 flex-shrink-0" /> +33 6 98 11 00 29</li>
-                <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 flex-shrink-0" /> {t("footer.hours")}</li>
+              <h4 className="font-display font-bold uppercase tracking-wide text-sm text-gray-300 mb-5">{t("footer.contact_title")}</h4>
+              <ul className="space-y-3 text-gray-500 text-sm">
+                <li className="flex items-center gap-2"><Mail className="w-3.5 h-3.5 flex-shrink-0 text-exhaust-orange" /> contact@power-exhaust.com</li>
+                <li className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 flex-shrink-0 text-exhaust-orange" /> +33 6 98 11 00 29</li>
+                <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 flex-shrink-0 text-exhaust-orange" /> {t("footer.hours")}</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+          <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-600">
             <p>© 2026 Power Exhaust. {t("footer.rights")}</p>
-            <p className="text-gray-600">
-              Made with <span className="text-purple-500">♥</span> by{" "}
-              <a href="https://beassistnow.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-exhaust-orange transition-colors">
-                Beassist
-              </a>
-            </p>
             <div className="flex flex-wrap gap-6 items-center">
               <Link href="/cgv" className="hover:text-white transition-colors">{t("footer.cgv")}</Link>
               <Link href="/mentions-legales" className="hover:text-white transition-colors">{t("footer.legal")}</Link>
               <Link href="/confidentialite" className="hover:text-white transition-colors">{t("footer.privacy")}</Link>
-              <Link href="/login" className="flex items-center gap-1.5 text-gray-600 hover:text-white border border-white/10 hover:border-white/30 rounded-lg px-3 py-1.5 transition-all">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 16 16">
-                  <circle cx="8" cy="5" r="3" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M2 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
+              <Link href="/login" className="flex items-center gap-1.5 text-gray-600 hover:text-white border border-white/10 hover:border-white/30 rounded px-3 py-1.5 transition-colors">
                 {t("footer.backoffice")}
               </Link>
             </div>

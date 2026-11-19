@@ -10,7 +10,7 @@
     "badge": "Personalised offer within 24 business hours",
     "title1": "Sell your",
     "title2": "exhaust system",
-    "title3": "at the best price.",
+    "title3": "at the best price",
     "desc": "Power Exhaust buys all motorcycle exhaust systems — Akrapovic, Leovince, Arrow, Termignoni and many more. Get a personalised response within 24h, 100% online.",
     "badge_price": "We buy at the best price",
     "badge_payment": "Payment within 48h",
@@ -110,7 +110,7 @@
     "f5_s4": "Payment and certificate received"
   },
   "security": {
-    "badge": "🔒 Security & privacy",
+    "badge": "Security & privacy",
     "title": "Your identity data",
     "title_protected": "100% protected",
     "desc": "The law requires us to verify your identity (Art. R321-3 CSI). Here is exactly how we protect your information.",
